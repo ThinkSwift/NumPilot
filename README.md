@@ -1,3 +1,3 @@
 # NumPilot
 
-GitHub Pages homepage for `numpilot.com`.
+GitHub Pages submission homepage for `numpilot.com`.
