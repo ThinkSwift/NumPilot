@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NumPilot | 공학 해석의 진입장벽을 낮추는 AI 수치해석 플랫폼</title>
+  <meta name="description" content="비싸고 어려운 수치해석을 교육용 데모에서 산업 현장용 AI 해석 서비스로 확장합니다." />
+  <style>
+    
+* { box-sizing: border-box; }
+:root {
+  color-scheme: dark;
+  --bg: #080A0E;
+  --panel: rgba(255, 255, 255, 0.075);
+  --line: rgba(255, 255, 255, 0.14);
+  --text: #F7F8FB;
+  --muted: #B8C0CC;
+  --accent: #58D6FF;
+  --accent2: #F7C948;
+}
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", "Segoe UI", sans-serif;
+  background:
+    radial-gradient(circle at 18% 8%, color-mix(in srgb, var(--accent) 24%, transparent), transparent 31rem),
+    radial-gradient(circle at 82% 12%, color-mix(in srgb, var(--accent2) 22%, transparent), transparent 34rem),
+    linear-gradient(180deg, #0B0E14 0%, #080A0E 55%, #050608 100%);
+  color: var(--text);
+  line-height: 1.7;
+}
+a { color: inherit; }
+.page { width: min(1120px, calc(100% - 32px)); margin: 0 auto; }
+header { min-height: 100svh; display: grid; align-content: center; padding: 40px 0 32px; }
+.topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 22px; color: var(--muted); font-size: 14px; }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 800; color: var(--text); }
+.mark { width: 30px; height: 30px; border-radius: 8px; background: linear-gradient(135deg, var(--accent), var(--accent2)); box-shadow: 0 0 24px color-mix(in srgb, var(--accent) 48%, transparent); }
+.hero { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 28px; align-items: center; }
+.video {
+  aspect-ratio: 16 / 9;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.035));
+  display: grid;
+  place-items: center;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.34);
+}
+.video iframe { width: 100%; height: 100%; border: 0; }
+.video-placeholder { padding: 28px; text-align: center; color: var(--muted); }
+.play { width: 70px; height: 70px; border-radius: 50%; margin: 0 auto 16px; background: var(--text); color: #050608; display: grid; place-items: center; font-size: 28px; }
+.eyebrow { color: var(--accent); font-weight: 800; letter-spacing: 0; text-transform: uppercase; font-size: 13px; }
+h1 { font-size: clamp(38px, 7vw, 76px); line-height: 1.05; margin: 12px 0 18px; letter-spacing: 0; }
+.subtitle { color: var(--muted); font-size: clamp(18px, 2vw, 23px); max-width: 760px; }
+.actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 28px; }
+.button { min-height: 44px; padding: 10px 16px; border-radius: 8px; border: 1px solid var(--line); text-decoration: none; font-weight: 800; }
+.primary { background: var(--text); color: #050608; border-color: transparent; }
+section { padding: 58px 0; border-top: 1px solid var(--line); }
+.section-title { display: flex; align-items: baseline; justify-content: space-between; gap: 18px; margin-bottom: 18px; }
+h2 { font-size: clamp(26px, 4vw, 42px); line-height: 1.18; margin: 0; letter-spacing: 0; }
+.limit { color: var(--muted); font-size: 14px; white-space: nowrap; }
+.answer { font-size: 18px; color: #E7EBF2; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 24px; }
+.figure-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+figure { margin: 0; min-height: 260px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: rgba(255,255,255,0.06); }
+.visual { height: 128px; position: relative; background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 34%, transparent), color-mix(in srgb, var(--accent2) 28%, transparent)); }
+.visual::before, .visual::after { content: ""; position: absolute; inset: 22px; border: 1px solid rgba(255,255,255,0.28); border-radius: 8px; transform: rotate(-4deg); }
+.visual::after { inset: 42px 28px 28px 48px; transform: rotate(6deg); background: rgba(0,0,0,0.18); }
+figcaption { padding: 16px; }
+figcaption strong { display: block; margin-bottom: 6px; }
+figcaption span { color: var(--muted); font-size: 14px; line-height: 1.55; }
+.footer { padding: 34px 0 50px; color: var(--muted); display: flex; justify-content: space-between; gap: 16px; border-top: 1px solid var(--line); }
+@media (max-width: 900px) {
+  header { min-height: auto; }
+  .hero { grid-template-columns: 1fr; }
+  .figure-grid { grid-template-columns: 1fr; }
+  .section-title, .footer { display: block; }
+  .limit { display: block; margin-top: 6px; }
+}
+
+    :root { --accent: #58D6FF; --accent2: #F7C948; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="topbar">
+        <div class="brand"><span class="mark"></span>NumPilot</div>
+        <div>IT / AI Engineering</div>
+      </div>
+      <div class="hero">
+        <div class="video">
+          
+      <div class="video-placeholder">
+        <div class="play">▶</div>
+        <strong>YouTube Shorts</strong><br />
+        영상 공개 후 embed 링크를 이 영역에 연결합니다.
+      </div>
+    
+        </div>
+        <div>
+          <div class="eyebrow">Modoo Startup Submission</div>
+          <h1>공학 해석의 진입장벽을 낮추는 AI 수치해석 플랫폼</h1>
+          <p class="subtitle">비싸고 어려운 수치해석을 교육용 데모에서 산업 현장용 AI 해석 서비스로 확장합니다.</p>
+          <div class="actions">
+            <a class="button primary" href="#q1">지원서 보기</a>
+            <a class="button" href="https://numpilot.com">numpilot.com</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section id="q1">
+      <div class="section-title"><h2>Q1. 이 아이디어를 떠올린 배경</h2><span class="limit">제출용 1000자 이내</span></div>
+      <div class="answer">공학 해석은 제품 개발과 연구의 핵심 도구지만, 여전히 비싸고 어렵고 오래 걸립니다. 학생, 연구실, 스타트업, 중소기업은 상용 CAE 라이선스와 학습 난이도 때문에 해석을 충분히 활용하지 못합니다. 반면 AI 기반 해석 기술은 빠르게 발전하고 있지만, 실제 문제 데이터와 반복 사용 경험이 부족하면 곧바로 실무 서비스로 연결되기 어렵습니다. NumPilot은 이 간극을 줄이기 위해 출발했습니다. 처음에는 사용자가 조건을 바꾸고 결과 변화를 바로 확인하는 교육형 수치해석 앱으로 시작하고, 그 과정에서 쌓이는 문제 유형과 반복 실험 데이터를 바탕으로 AI 해석 성능을 고도화합니다. 즉 배우기 쉬운 데모가 장기적으로 산업용 AI 해석 플랫폼의 데이터 기반이 되는 구조입니다.</div>
+    </section>
+
+    <section id="q2">
+      <div class="section-title"><h2>Q2. 누구의 어떤 문제를 해결하는가</h2><span class="limit">제출용 1000자 이내</span></div>
+      <div class="answer">NumPilot이 해결하려는 문제는 해석이 필요한 사람과 해석 도구 사이의 거리입니다. 공학을 배우는 학생은 수식과 코드가 어렵고, 연구실은 반복 실험과 파라미터 변경에 많은 시간을 쓰며, 산업체 개발자는 빠르게 아이디어를 검증하고 싶어도 전문 해석 인력이나 고가 도구가 필요합니다. 기존 해석 소프트웨어는 강력하지만 초보자가 바로 쓰기 어렵고, 일반 교육 콘텐츠는 설명은 쉬워도 실제 해석 자동화로 이어지기 어렵습니다. NumPilot은 사용자가 문제 조건을 바꾸고 결과 변화를 즉시 확인하게 하여 학습과 실험을 연결합니다. 초기 고객은 학습자와 연구실이지만, 장기적으로는 반복 해석이 필요한 산업 현장의 일반 개발자까지 확장할 수 있습니다.</div>
+    </section>
+
+    <section id="q3">
+      <div class="section-title"><h2>Q3. 어떻게 실현할 것인가</h2><span class="limit">제출 제한 없음</span></div>
+      <div class="answer">NumPilot은 단계적으로 구현합니다. 1단계에서는 열전달, 구조, 전자기 등 제한된 문제군을 중심으로 교육용 데모와 튜토리얼을 제공합니다. 사용자는 복잡한 설정 없이 입력 조건을 바꾸고 결과 변화를 화면에서 확인합니다. 2단계에서는 반복 실험 데이터와 사용자 문제 유형을 축적해 특정 문제군에 대한 AI 해석 모델을 고도화합니다. 3단계에서는 연구실, 교육기관, 산업체와 협력해 PoC, 라이선스, 구독형 해석 서비스를 제공합니다. 핵심은 교육, 데이터, AI, 산업 적용을 하나의 순환 구조로 연결하는 것입니다. 초기에는 배우는 수치해석 앱으로 진입하지만, 반복 사용할수록 해석 데이터와 모델 성능이 쌓여 실제 산업 현장에 쓰이는 AI 해석 플랫폼으로 성장하는 것이 목표입니다.</div>
+    </section>
+
+    <section>
+      <div class="section-title"><h2>제출 이미지 구성안</h2><span class="limit">최대 5장</span></div>
+      <div class="figure-grid">
+        <figure>
+          <div class="visual"></div>
+          <figcaption><strong>문제 배경</strong><span>고가 소프트웨어와 높은 학습 난이도 때문에 해석 접근성이 낮습니다.</span></figcaption>
+        </figure>
+        
+
+        <figure>
+          <div class="visual"></div>
+          <figcaption><strong>교육형 진입</strong><span>입력 조건을 바꾸고 결과 변화를 즉시 확인하는 데모로 시작합니다.</span></figcaption>
+        </figure>
+        
+
+        <figure>
+          <div class="visual"></div>
+          <figcaption><strong>데이터 축적</strong><span>반복 실험과 문제 유형이 AI 해석 모델의 학습 자산이 됩니다.</span></figcaption>
+        </figure>
+        
+
+        <figure>
+          <div class="visual"></div>
+          <figcaption><strong>AI 해석 고도화</strong><span>FDM/FEM 기반 데이터와 surrogate solver를 연결합니다.</span></figcaption>
+        </figure>
+        
+
+        <figure>
+          <div class="visual"></div>
+          <figcaption><strong>산업 확장</strong><span>연구실 PoC와 기업용 구독형 해석 서비스로 확장합니다.</span></figcaption>
+        </figure>
+        </div>
+    </section>
+
+    <div class="footer">
+      <div>© NumPilot. Prepared for 모두의 창업.</div>
+      <div>numpilot.com</div>
+    </div>
+  </div>
+</body>
+</html>
