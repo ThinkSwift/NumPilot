@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NumPilot — shared simulation</title>
+<meta property="og:title" content="A verified physics simulation, made on NumPilot">
+<meta property="og:description" content="Open it on your phone, tweak it, and share your own.">
+<meta property="og:image" content="https://numpilot.com/assets/logo.png">
+<link rel="icon" type="image/png" href="assets/logo.png">
+<style>
+  :root { --bg:#05070c; --fg:#edf2f9; --mut:#94a3b8; --cyan:#34d2e6; --orange:#ff9d4a; --line:rgba(255,255,255,.09); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:
+      radial-gradient(700px 400px at 20% -5%, rgba(52,210,230,.12), transparent 60%),
+      radial-gradient(600px 400px at 90% 0%, rgba(177,140,255,.09), transparent 60%),
+      var(--bg);
+    color:var(--fg);
+    font:16px/1.6 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif; }
+  .wrap { max-width:560px; margin:0 auto; padding:40px 20px 64px; }
+  .brand { display:flex; align-items:center; gap:9px; color:var(--cyan); font-weight:800; letter-spacing:2px; font-size:13px; }
+  .brand img { width:26px; height:26px; }
+  h1 { font-size:30px; line-height:1.2; margin:14px 0 6px; letter-spacing:-.8px; }
+  .prompt { color:var(--mut); font-style:italic; margin:0 0 22px; }
+  .card { border:1px solid var(--line); border-radius:20px; padding:22px;
+          background:linear-gradient(170deg, rgba(255,255,255,.06), rgba(255,255,255,.03)); }
+  .badge { display:inline-block; font-size:13px; font-weight:700; padding:5px 12px; border-radius:999px; }
+  .params { margin:18px 0 0; display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .param { background:rgba(255,255,255,.04); border-radius:12px; padding:10px 12px; }
+  .param .k { color:var(--mut); font-size:13px; }
+  .param .v { font-weight:700; font-variant-numeric:tabular-nums; }
+  .cta { display:flex; gap:10px; margin-top:26px; flex-wrap:wrap; }
+  .btn { flex:1; min-width:180px; text-align:center; padding:14px 18px; border-radius:13px;
+         text-decoration:none; font-weight:700; transition:transform .15s ease; }
+  .btn:hover { transform:translateY(-2px); }
+  .btn.primary { background:var(--cyan); color:#04201a; }
+  .btn.ghost { border:1px solid var(--line); color:var(--fg); }
+  .foot { color:var(--mut); font-size:13px; margin-top:22px; }
+  .home { display:inline-block; margin-top:16px; font-size:13px; color:var(--mut); text-decoration:none; }
+  .home:hover { color:var(--fg); }
+  .err { color:var(--orange); }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="brand" href="/"><img src="assets/logo.png" alt="">NUMPILOT</a>
+    <h1 id="title">A shared simulation</h1>
+    <p class="prompt" id="prompt"></p>
+
+    <div class="card">
+      <span class="badge" id="badge">model</span>
+      <div class="params" id="params"></div>
+    </div>
+
+    <div class="cta">
+      <a class="btn primary" id="open" href="#">Open in NumPilot</a>
+      <a class="btn ghost" id="get" href="https://apps.apple.com/app/numpilot">Get the app</a>
+    </div>
+    <p class="foot">Open it on your phone to run it, tweak the design, and share your own — every result is computed by a verified on-device solver.</p>
+    <a class="home" href="/">← What is NumPilot?</a>
+  </div>
+
+<script>
+  function b64urlDecode(s){ s=s.replace(/-/g,'+').replace(/_/g,'/'); while(s.length%4)s+='='; return atob(s); }
+  const ELEC="#34d2e6", CURR="#ff9d4a", HEAT="#ff6b5b", MAG="#b18cff", STR="#5b9dff";
+  const labels = {
+    comb:    { name:"Comb drive", sub:"electrostatics → capacitance & force", color:ELEC,
+               keys:{fingerPairs:"finger pairs",gap:"gap (µm)",overlap:"overlap (µm)",thickness:"thickness (µm)",voltage:"voltage (V)"} },
+    capacitor:{ name:"Parallel-plate capacitor", sub:"electrostatics → capacitance", color:ELEC,
+               keys:{size:"plate width (µm)",gap:"gap (µm)"} },
+    crossover:{ name:"Interconnect crossover", sub:"coupling capacitance · crosstalk", color:ELEC,
+               keys:{size:"line width (µm)",gap:"separation (µm)"} },
+    coax:    { name:"Coaxial cable", sub:"radial field → capacitance per length", color:ELEC,
+               keys:{size:"shield radius R (µm)",gap:"inner radius a (µm)"} },
+    current: { name:"Current & resistance", sub:"steady current → resistance", color:CURR,
+               keys:{width:"length (µm)",depth:"depth (µm)",height:"height (µm)",contact:"contact (µm)",voltage:"voltage (V)"} },
+    neck:    { name:"Current constriction", sub:"pinched neck → current crowding", color:CURR,
+               keys:{width:"length (µm)",depth:"full width (µm)",height:"height (µm)",contact:"neck width (µm)",voltage:"voltage (V)"} },
+    heat:    { name:"Heat spreader", sub:"conduction → spreading & peak temp", color:HEAT,
+               keys:{base:"base (mm)",height:"height (mm)",source:"source (mm)",power:"power (W)",ambient:"sink (°C)"} },
+    heatsink:{ name:"Heat sink", sub:"convection cooling → thermal resistance", color:HEAT,
+               keys:{footprint:"footprint (mm)",finCount:"fins",finHeight:"fin height (mm)",power:"power (W)",airflow:"airflow h"} },
+    electromagnet:{ name:"Electromagnet", sub:"magnetostatics → flux", color:MAG,
+               keys:{drive:"coil (A-turns)"} },
+    halbach: { name:"Halbach array", sub:"one-sided magnetic flux", color:MAG,
+               keys:{poles:"magnets",remanence:"Br (T)"} },
+    motor:   { name:"2-pole PM motor", sub:"magnet rotor + iron stator", color:MAG,
+               keys:{drive:"drive (A-turns)",remanence:"Br (T)"} },
+    cantilever:{ name:"Cantilever beam", sub:"elasticity → bending", color:STR,
+               keys:{load:"load",size:"beam depth (%)"} },
+    "plate-hole":{ name:"Plate with a hole", sub:"stress concentration (Kt≈3)", color:STR,
+               keys:{load:"load",size:"hole size (%)"} },
+    bracket: { name:"L-bracket", sub:"re-entrant corner stress", color:STR,
+               keys:{load:"load",size:"arm width (%)"} }
+  };
+  try {
+    const r = new URLSearchParams(location.search).get('r');
+    const recipe = JSON.parse(b64urlDecode(r));
+    const meta = labels[recipe.template] || { name:recipe.template, sub:"", color:"#34d2e6", keys:{} };
+    document.getElementById('title').textContent = recipe.title || meta.name;
+    document.getElementById('prompt').textContent = recipe.prompt ? '“' + recipe.prompt + '”' : '';
+    const badge = document.getElementById('badge');
+    badge.textContent = meta.name + " · " + meta.sub;
+    badge.style.background = meta.color + "22"; badge.style.color = meta.color;
+    const params = document.getElementById('params');
+    for (const [k,v] of Object.entries(recipe.params||{})) {
+      const div = document.createElement('div'); div.className='param';
+      div.innerHTML = '<div class="k">'+((meta.keys[k])||k)+'</div><div class="v">'+(Math.round(v*100)/100)+'</div>';
+      params.appendChild(div);
+    }
+    document.getElementById('open').href = 'numpilot://m?r=' + encodeURIComponent(r);
+  } catch (e) {
+    document.getElementById('title').textContent = "Couldn't read this model";
+    document.getElementById('title').className = "err";
+  }
+</script>
+</body>
+</html>

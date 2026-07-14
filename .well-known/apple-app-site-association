@@ -1,0 +1,12 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["TEAMID.com.swiftian.NumPilot"],
+        "components": [
+          { "/": "/m*", "comment": "model share / deep links (numpilot.app/m?r=...)" }
+        ]
+      }
+    ]
+  }
+}
