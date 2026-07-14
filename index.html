@@ -108,6 +108,12 @@
   .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 36px rgba(52,210,230,.3); }
   .btn-ghost { border: 1px solid var(--line); color: var(--fg); background: rgba(255,255,255,.02); }
   .btn-ghost:hover { border-color: rgba(255,255,255,.25); }
+  .btn-soon {
+    border: 1px solid rgba(52,210,230,.35); color: var(--cyan); background: rgba(52,210,230,.07);
+    cursor: default;
+  }
+  .btn-soon .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--cyan);
+    box-shadow: 0 0 10px var(--cyan); animation: pulse 2.4s infinite; }
   .hero-note { margin-top: 26px; font-size: 13.5px; color: var(--mut); display: flex; align-items: center; gap: 8px; }
   .hero-note .seal { color: var(--rf); }
 
@@ -365,7 +371,7 @@
       <a href="#verified">Verified</a>
       <a href="#pro">Pro</a>
     </div>
-    <a class="nav-cta" href="https://apps.apple.com/app/numpilot">Get the app</a>
+    <a class="nav-cta" href="#pro">Coming soon</a>
   </div>
 </nav>
 
@@ -376,7 +382,7 @@
       <h1>Describe it.<br><span class="grad">We solve it.</span></h1>
       <p class="hero-sub">Type a physics setup in plain words. NumPilot builds it and runs a <strong>real numerical solver right on your device</strong> — no servers, no fakes.</p>
       <div class="cta-row">
-        <a class="btn btn-primary" href="https://apps.apple.com/app/numpilot"> Download on the App&nbsp;Store</a>
+        <span class="btn btn-soon"><span class="dot"></span> Coming soon to the App&nbsp;Store</span>
         <a class="btn btn-ghost" href="#how">See how it works</a>
       </div>
       <p class="hero-note"><span class="seal">✓</span> The AI sets up the problem. The solver computes every number.</p>
@@ -633,7 +639,8 @@
   <img src="assets/logo.png" alt="NumPilot helmet logo">
   <h2>What do you want to analyze?</h2>
   <p>Describe it in plain words. Get real, verified physics back in seconds.</p>
-  <a class="btn btn-primary" href="https://apps.apple.com/app/numpilot"> Download on the App&nbsp;Store</a>
+  <span class="btn btn-soon"><span class="dot"></span> Coming soon to the App&nbsp;Store</span>
+  <p style="margin-top:18px; font-size:14px;"><a href="mailto:hello@swiftian.com?subject=NumPilot%20launch" style="color:var(--cyan)">Get notified at launch →</a></p>
 </div>
 
 <footer>
