@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>질문하는 사람과 계산하는 사람 사이의 거리 — Numpilot</title>
+<meta name="description" content="분업은 왜 생겼나 처음부터 해석이 별도의 직무였던 것은 아니다. 계산이 손으로 이루어지던 시절, 설계자와 계산자는 대체로 같은 사람이었다. 구조물을 그린 사람이 하중을 계산했다. 계산은 설계의 일부…">
+<meta property="og:title" content="질문하는 사람과 계산하는 사람 사이의 거리 — Numpilot">
+<meta property="og:description" content="분업은 왜 생겼나 처음부터 해석이 별도의 직무였던 것은 아니다. 계산이 손으로 이루어지던 시절, 설계자와 계산자는 대체로 같은 사람이었다. 구조물을 그린 사람이 하중을 계산했다. 계산은 설계의 일부…">
+<meta property="og:type" content="article">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="/assets/logo.png">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+:root{
+  --bg:#ffffff; --alt:#f7f9fb; --line:#e5e9ef; --line2:#d3dae3;
+  --fg:#1a2029; --dim:#5b6675; --faint:#8d97a5;
+  --accent:#1d6fd6; --accent-soft:#eef4fd;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace;
+  --sans:Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);
+  font-size:17px;line-height:1.78;letter-spacing:-.004em;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline;text-underline-offset:3px}
+
+/* 핸드북 2단 레이아웃 */
+.shell{max-width:1120px;margin:0 auto;padding:0 26px;display:grid;
+  grid-template-columns:236px minmax(0,1fr);gap:56px;align-items:start}
+.solo{max-width:1120px;margin:0 auto;padding:0 26px}
+
+header{border-bottom:1px solid var(--line);background:var(--bg);position:sticky;top:0;z-index:30}
+.hd{max-width:1120px;margin:0 auto;padding:0 26px;display:flex;align-items:center;
+  justify-content:space-between;height:58px}
+.brand{font-size:16px;font-weight:750;letter-spacing:-.02em;color:var(--fg)}
+.brand:hover{text-decoration:none}
+nav a{font-size:14px;color:var(--dim);margin-left:20px}
+nav a:hover{color:var(--accent);text-decoration:none}
+
+/* 사이드바 목차 */
+aside{position:sticky;top:82px;padding:34px 0 40px;font-size:14px}
+.side-h{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--faint);
+  text-transform:uppercase;margin-bottom:14px;font-weight:600}
+.toc{list-style:none;margin:0;padding:0;border-left:2px solid var(--line);}
+.toc li{margin:0}
+.toc a{display:block;padding:7px 0 7px 14px;color:var(--dim);line-height:1.5;
+  margin-left:-2px;border-left:2px solid transparent}
+.toc a:hover{color:var(--accent);text-decoration:none;background:var(--accent-soft)}
+.toc a.on{color:var(--accent);font-weight:650;border-left-color:var(--accent);
+  background:var(--accent-soft)}
+.toc .n{font-family:var(--mono);font-size:11.5px;color:var(--faint);margin-right:7px}
+.toc a.on .n{color:var(--accent)}
+
+/* index */
+.hero{padding:52px 0 30px}
+.kicker{display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  color:var(--accent);text-transform:uppercase;font-weight:650;
+  background:var(--accent-soft);padding:5px 10px;border-radius:4px;margin-bottom:18px}
+.hero h1{font-size:34px;line-height:1.32;margin:0 0 16px;letter-spacing:-.028em;font-weight:750}
+.hero p{color:var(--dim);font-size:16.5px;margin:0;max-width:42em;line-height:1.75}
+.list{padding:6px 0 80px}
+.item{display:grid;grid-template-columns:44px 1fr;gap:16px;padding:22px 0;
+  border-top:1px solid var(--line);color:inherit}
+.item:hover{text-decoration:none}
+.item:hover .t{color:var(--accent)}
+.no{font-family:var(--mono);font-size:13px;color:var(--faint);font-weight:600;padding-top:3px}
+.t{font-size:19px;font-weight:700;margin:0 0 7px;letter-spacing:-.018em;line-height:1.42;
+  color:var(--fg);transition:color .15s}
+.ex{color:var(--dim);font-size:15.5px;line-height:1.7;margin:0}
+.meta{font-family:var(--mono);font-size:11.5px;color:var(--faint);margin-top:9px}
+
+/* article */
+article{padding:34px 0 40px;max-width:720px}
+.a-kicker{font-family:var(--mono);font-size:11.5px;letter-spacing:.13em;color:var(--accent);
+  text-transform:uppercase;font-weight:650;margin-bottom:14px}
+article h1{font-size:31px;line-height:1.34;margin:0 0 14px;letter-spacing:-.03em;font-weight:750}
+.a-meta{font-family:var(--mono);font-size:12px;color:var(--faint);
+  padding-bottom:24px;border-bottom:1px solid var(--line);margin-bottom:34px}
+.body h2{font-size:21px;margin:46px 0 14px;letter-spacing:-.02em;font-weight:750;line-height:1.42;
+  padding-top:4px}
+.body h3{font-size:18px;margin:32px 0 10px;font-weight:700}
+.body p{margin:0 0 21px}
+.body strong{font-weight:750}
+.body em{color:var(--dim);font-style:italic}
+.body ul,.body ol{padding-left:22px;margin:0 0 21px}
+.body li{margin-bottom:7px}
+.body blockquote{margin:26px 0;padding:16px 20px;background:var(--alt);
+  border-left:3px solid var(--accent);border-radius:0 6px 6px 0;color:var(--dim)}
+.body blockquote p{margin:0 0 10px}
+.body blockquote p:last-child{margin:0}
+.body code{font-family:var(--mono);font-size:.87em;background:var(--alt);
+  border:1px solid var(--line);border-radius:4px;padding:1.5px 6px;color:#0f5bb5}
+.body pre{background:var(--alt);border:1px solid var(--line);border-radius:8px;
+  padding:16px 18px;overflow-x:auto;margin:24px 0}
+.body pre code{background:none;border:0;padding:0;font-size:13.5px;line-height:1.7}
+.body hr{border:0;border-top:1px solid var(--line);margin:40px 0}
+.body img{max-width:100%;height:auto;border-radius:6px;margin:24px 0;border:1px solid var(--line)}
+.body table{width:100%;border-collapse:collapse;margin:24px 0;font-size:15.5px;
+  display:block;overflow-x:auto}
+.body th,.body td{border:1px solid var(--line);padding:9px 12px;text-align:left}
+.body th{background:var(--alt);font-weight:700}
+
+.pnav{display:flex;justify-content:space-between;gap:16px;
+  border-top:1px solid var(--line);padding:24px 0 0;margin-top:44px}
+.pnav a{font-size:15px;max-width:46%;font-weight:600}
+.pnav .lbl{display:block;font-family:var(--mono);font-size:10.5px;color:var(--faint);
+  letter-spacing:.12em;text-transform:uppercase;margin-bottom:5px;font-weight:600}
+footer{border-top:1px solid var(--line);margin-top:56px;padding:24px 0 44px;
+  color:var(--faint);font-size:12.5px;font-family:var(--mono)}
+
+@media(max-width:900px){
+  .shell{grid-template-columns:1fr;gap:0}
+  aside{position:static;padding:22px 0 6px;border-bottom:1px solid var(--line);margin-bottom:8px}
+  .toc{display:flex;gap:6px;overflow-x:auto;border-left:0;padding-bottom:6px}
+  .toc a{white-space:nowrap;border:1px solid var(--line);border-radius:20px;
+    padding:5px 12px;margin:0}
+  .toc a.on{border-color:var(--accent)}
+  article{padding-top:26px}
+}
+@media(max-width:640px){
+  body{font-size:16.5px}
+  .hero{padding:36px 0 24px}
+  .hero h1{font-size:26px}
+  article h1{font-size:25px}
+  .body h2{font-size:19.5px}
+  .t{font-size:17.5px}
+  .item{grid-template-columns:34px 1fr;gap:12px}
+  nav a{margin-left:13px;font-size:13px}
+}
+</style>
+</head>
+<body>
+<header><div class="hd">
+  <a class="brand" href="/">Numpilot</a>
+  <nav><a href="/">블로그</a><a href="/about/">소개</a></nav>
+</div></header>
+<div class="shell"><aside><div class="side-h">연재 목차</div><ul class="toc"><li><a href="/blog/01-why-one-day/"><span class="n">01</span>해석 한 번 돌리는 데 왜 하루가 걸릴까</a></li><li><a href="/blog/02-a-reckless-idea/"><span class="n">02</span>폰으로 해석한다는 무모한 생각</a></li><li><a class="on" href="/blog/03-the-distance/"><span class="n">03</span>질문하는 사람과 계산하는 사람 사이의 거리</a></li><li><a href="/blog/04-where-should-it-run/"><span class="n">04</span>계산은 어디서 일어나야 하는가</a></li></ul></aside><main><article><div class="a-kicker">손안의 수치해석 · 3편</div><h1>질문하는 사람과 계산하는 사람 사이의 거리</h1><div class="a-meta">2026-07-26 · 읽는 데 8분</div><div class="body"><h2>분업은 왜 생겼나</h2>
+<p>처음부터 해석이 별도의 직무였던 것은 아니다.</p>
+<p>계산이 손으로 이루어지던 시절, 설계자와 계산자는 대체로 같은 사람이었다. 구조물을 그린 사람이 하중을 계산했다. 계산은 설계의 일부였지 별도의 공정이 아니었다.</p>
+<p>분업을 만든 것은 <strong>도구의 복잡성</strong>이다.</p>
+<p>컴퓨터 해석이 등장하면서 다룰 수 있는 문제가 급격히 커졌다. 손으로는 불가능하던 복잡한 형상과 조건을 다룰 수 있게 되었고, 그 대가로 도구 자체가 하나의 전문 분야가 되었다. 격자를 어떻게 나누는지, 어떤 요소를 쓰는지, 수렴 조건을 어떻게 잡는지가 결과를 좌우한다. 잘못 쓰면 그럴듯하지만 틀린 답이 나온다.</p>
+<p>그럴듯하게 틀린 답은 아무 답도 없는 것보다 위험하다. 그래서 도구를 제대로 다루는 사람이 따로 필요해졌다. 합리적인 귀결이었다.</p>
+<p>문제는 이 분업이 <strong>효율을 위해 만들어졌지만, 지금은 다른 것을 만들어내고 있다는 것</strong>이다.</p>
+<h2>왕복에 드는 것</h2>
+<p>설계자에게 궁금증이 하나 생겼다고 하자. &ldquo;리브를 하나 더 대면 응력이 얼마나 줄지?&rdquo;</p>
+<p>이 질문이 답을 얻기까지의 경로는 이렇다. 조건을 정리해 문서로 만든다. 해석 담당자에게 전달한다. 담당자의 대기열에 들어간다. 순서가 오면 모델링하고 계산을 돌린다. 결과 보고서가 나온다. 설계자가 받아 본다.</p>
+<p>각 단계마다 시간이 붙는다. 그리고 <strong>각 단계마다 정보가 조금씩 샌다.</strong></p>
+<p>설계자의 머릿속에 있던 질문은 문서로 옮겨지면서 일부가 빠진다. &ldquo;이 정도면 되지 않을까 싶은데 감이 안 와서&rdquo;라는 맥락은 문서에 적히지 않는다. 해석 담당자는 적힌 조건만 보고 모델을 만든다. 결과 보고서는 숫자와 그림으로 돌아오지만, 설계자가 정말 알고 싶었던 것—&ldquo;그래서 이 방향이 맞나&rdquo;—에 대한 답은 아닐 수 있다.</p>
+<p>그러면 다시 묻는다. 왕복이 한 번 더 늘어난다.</p>
+<h2>진짜 손실은 묻지 않은 질문이다</h2>
+<p>여기까지는 비효율의 이야기다. 그런데 더 큰 손실은 다른 데 있다.</p>
+<p>왕복에 며칠이 걸린다는 것을 알면, 사람은 <strong>질문을 고르기 시작한다.</strong></p>
+<p>확신이 있는 것만 묻는다. 중요해 보이는 것만 묻는다. &ldquo;혹시나 해서&rdquo; 던지는 질문은 하지 않는다. 대기열을 차지할 만한 가치가 있는지 스스로 검열한다.</p>
+<p>그렇게 걸러진 질문들은 대체로 타당하다. 문제는 <strong>걸러진 쪽에 무엇이 있었는지 아무도 모른다는 것</strong>이다.</p>
+<p>설계에서 좋은 아이디어는 종종 엉뚱한 시도에서 나온다. &ldquo;이 재료를 여기 쓰면 어떨까&rdquo;, &ldquo;이 부분을 아예 없애면?&rdquo; 같은, 근거가 아직 없는 생각들. 이런 시도는 대부분 실패한다. 열 개 중 아홉은 버려진다. 그런데 열 번째가 설계를 바꾼다.</p>
+<p><strong>시도의 비용이 높으면, 열 번 시도할 수 없다.</strong> 한 번만 시도할 수 있다면 가장 안전한 것을 고르게 된다. 그 결과는 실패가 아니라, <strong>평범함</strong>이다.</p>
+<p>이것이 분업이 만든 진짜 비용이다. 잘못된 답이 아니라, 시도되지 않은 방향들.</p>
+<h2>도구가 어려우면 사람이 멀어진다</h2>
+<p>같은 일이 다른 분야에서도 있었다.</p>
+<p>출판이 그랬다. 조판은 오랫동안 전문 기술이었다. 글을 쓰는 사람과 그것을 지면에 앉히는 사람이 나뉘어 있었다. 편집자가 원고를 넘기면 조판소에서 판을 짜고, 교정을 보고, 다시 고치는 왕복이 있었다.</p>
+<p>컴퓨터 조판이 등장하면서 이 분업이 흐려졌다. 글 쓰는 사람이 직접 레이아웃을 보게 되었고, 그러자 <strong>글쓰기 자체가 달라졌다.</strong> 지면을 보면서 문장 길이를 조절하고, 배치를 바꿔가며 흐름을 만든다. 예전에는 불가능했던 종류의 판단이다.</p>
+<p>물론 전문 조판이 사라진 것은 아니다. 정교한 결과가 필요한 곳에서는 여전히 전문가가 한다. 다만 <strong>&ldquo;일단 대충 보고 판단하는&rdquo; 층이 새로 생겼다.</strong></p>
+<p>해석에도 그 층이 없다. 정밀한 해석과 아무것도 없음 사이에, 중간이 비어 있다.</p>
+<h2>중간층을 만든다는 것</h2>
+<p>우리가 만들려는 것은 전문 해석을 대체하는 도구가 아니다. <strong>비어 있는 중간층</strong>이다.</p>
+<ul>
+<li>정밀도는 낮아도 된다. 방향만 맞으면 된다.</li>
+<li>대신 즉시 답해야 한다. 30초 안에.</li>
+<li>그리고 설계자 본인이 직접 다룰 수 있어야 한다.</li>
+</ul>
+<p>세 번째가 가장 중요하다. 앞의 둘을 만족해도 전문가를 거쳐야 한다면 거리는 그대로다.</p>
+<p>그런데 &ldquo;직접 다룰 수 있어야 한다&rdquo;는 조건은 생각보다 무겁다. 해석 도구가 어려운 이유는 개발자가 게을러서가 아니다. <strong>문제 자체가 복잡하기 때문</strong>이다. 격자를 어떻게 나눌지, 경계조건을 어떻게 줄지는 실제로 결과를 좌우하는 선택이고, 아무렇게나 정할 수 없다.</p>
+<p>그러니 &ldquo;쉽게 만든다&rdquo;는 말은 두 가지 중 하나를 뜻한다. <strong>선택지를 줄이거나, 대신 결정해주거나.</strong></p>
+<p>우리는 둘 다 하기로 했다. 다룰 수 있는 문제의 범위를 처음부터 좁게 잡고, 그 안에서는 사용자가 정하지 않은 것을 시스템이 합리적으로 채운다.</p>
+<p>여기서 자연스럽게 다음 질문이 나온다. 그 결정은 <strong>어디서</strong> 이루어져야 하는가. 사용자의 기기에서인가, 서버에서인가.</p>
+<hr />
+<p><strong>다음 편 예고 —</strong> <em>계산은 어디서 일어나야 하는가.</em> 서버로 보내면 편한데 왜 굳이 기기에서 돌리려 했는지, 그 선택의 대가와 이득을 따져본다.</p></div><div class="pnav"><a href="/blog/02-a-reckless-idea/"><span class="lbl">이전</span>폰으로 해석한다는 무모한 생각</a><a href="/blog/04-where-should-it-run/" style="text-align:right"><span class="lbl">다음</span>계산은 어디서 일어나야 하는가</a></div></article></main></div><footer><div class="solo">© Numpilot</div></footer>
+</body></html>

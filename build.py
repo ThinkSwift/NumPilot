@@ -1,17 +1,23 @@
-<!doctype html>
-<html lang="ko">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Numpilot — 말로 설명하면, 폰이 풀어낸다</title>
-<meta name="description" content="수치해석을 휴대폰에서 하겠다는 무모한 결정, 그리고 그것을 가능하게 만들기 위해 우리가 설계해야 했던 언어에 대한 기록.">
-<meta property="og:title" content="Numpilot — 말로 설명하면, 폰이 풀어낸다">
-<meta property="og:description" content="수치해석을 휴대폰에서 하겠다는 무모한 결정, 그리고 그것을 가능하게 만들기 위해 우리가 설계해야 했던 언어에 대한 기록.">
-<meta property="og:type" content="website">
-<meta name="theme-color" content="#ffffff">
-<link rel="icon" href="/assets/logo.png">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
-<style>
+#!/usr/bin/env python3
+"""NumPilot 블로그 빌드 — posts/*.md 를 읽어 정적 HTML 생성.
+
+사용법:  python3 build.py
+출력:    index.html (블로그 메인), blog/<slug>/index.html (각 글)
+"""
+import os, re, sys, html, json
+import markdown
+
+ROOT = os.path.dirname(os.path.abspath(__file__))
+POSTS_DIR = os.path.join(ROOT, "posts")
+BLOG_DIR = os.path.join(ROOT, "blog")
+
+SITE = "Numpilot"
+TAGLINE = "말로 설명하면, 폰이 풀어낸다"
+SERIES = "손안의 수치해석"
+SERIES_BLURB = ("수치해석을 휴대폰에서 하겠다는 무모한 결정, 그리고 그것을 가능하게 만들기 위해 "
+                "우리가 설계해야 했던 언어에 대한 기록.")
+
+CSS = """
 :root{
   --bg:#ffffff; --alt:#f7f9fb; --line:#e5e9ef; --line2:#d3dae3;
   --fg:#1a2029; --dim:#5b6675; --faint:#8d97a5;
@@ -129,12 +135,142 @@ footer{border-top:1px solid var(--line);margin-top:56px;padding:24px 0 44px;
   .item{grid-template-columns:34px 1fr;gap:12px}
   nav a{margin-left:13px;font-size:13px}
 }
-</style>
+"""
+
+HEAD = """<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{TITLE}}</title>
+<meta name="description" content="{{DESC}}">
+<meta property="og:title" content="{{TITLE}}">
+<meta property="og:description" content="{{DESC}}">
+<meta property="og:type" content="{{OGTYPE}}">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="/assets/logo.png">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>{{CSS}}</style>
 </head>
 <body>
 <header><div class="hd">
   <a class="brand" href="/">Numpilot</a>
   <nav><a href="/">블로그</a><a href="/about/">소개</a></nav>
 </div></header>
-<div class="shell"><aside><div class="side-h">연재 목차</div><ul class="toc"><li><a href="/blog/01-why-one-day/"><span class="n">01</span>해석 한 번 돌리는 데 왜 하루가 걸릴까</a></li><li><a href="/blog/02-a-reckless-idea/"><span class="n">02</span>폰으로 해석한다는 무모한 생각</a></li><li><a href="/blog/03-the-distance/"><span class="n">03</span>질문하는 사람과 계산하는 사람 사이의 거리</a></li><li><a href="/blog/04-where-should-it-run/"><span class="n">04</span>계산은 어디서 일어나야 하는가</a></li></ul></aside><main><section class="hero"><div class="kicker">연재 · 손안의 수치해석</div><h1>말로 설명하면, 폰이 풀어낸다</h1><p>수치해석을 휴대폰에서 하겠다는 무모한 결정, 그리고 그것을 가능하게 만들기 위해 우리가 설계해야 했던 언어에 대한 기록.</p></section><section class="list"><a class="item" href="/blog/01-why-one-day/"><div class="no">01</div><div><div class="t">해석 한 번 돌리는 데 왜 하루가 걸릴까</div><p class="ex">만들어보지 않고 아는 법 프라이팬을 새로 설계한다고 하자. 조건은 하나다. 손잡이가 뜨거워지면 안 된다. 가장 확실한 방법은 만들어서 구워보는 것이다. 그런데 손잡이를 1밀리미터 두껍게 하면 어떻게…</p><div class="meta">2026-07-24 · 8분</div></div></a><a class="item" href="/blog/02-a-reckless-idea/"><div class="no">02</div><div><div class="t">폰으로 해석한다는 무모한 생각</div><p class="ex">계산기의 계보 공학 계산이 어디서 이루어졌는지를 따라가 보면, 기계는 계속 작아졌다. 처음에는 건물만 한 컴퓨터였다. 계산을 하려면 그 방에 찾아가야 했다. 다음은 워크스테이션이었다. 연구실 한구석…</p><div class="meta">2026-07-25 · 9분</div></div></a><a class="item" href="/blog/03-the-distance/"><div class="no">03</div><div><div class="t">질문하는 사람과 계산하는 사람 사이의 거리</div><p class="ex">분업은 왜 생겼나 처음부터 해석이 별도의 직무였던 것은 아니다. 계산이 손으로 이루어지던 시절, 설계자와 계산자는 대체로 같은 사람이었다. 구조물을 그린 사람이 하중을 계산했다. 계산은 설계의 일부…</p><div class="meta">2026-07-26 · 8분</div></div></a><a class="item" href="/blog/04-where-should-it-run/"><div class="no">04</div><div><div class="t">계산은 어디서 일어나야 하는가</div><p class="ex">서버로 보내면 되지 않나 폰의 성능이 부족하다는 이야기를 하면 대부분 같은 해결책을 떠올린다. "계산은 서버에서 하고, 폰은 결과만 받으면 되잖아." 맞는 말이다. 실제로 대부분의 모바일 서비스가 …</p><div class="meta">2026-07-27 · 8분</div></div></a></section></main></div><footer><div class="solo">© Numpilot</div></footer>
+"""
+
+FOOT = """<footer><div class="solo">© Numpilot</div></footer>
 </body></html>
+"""
+
+
+def parse(path):
+    raw = open(path, encoding="utf-8").read()
+    meta, body = {}, raw
+    m = re.match(r"^---\s*\n(.*?)\n---\s*\n(.*)$", raw, re.S)
+    if m:
+        for line in m.group(1).splitlines():
+            if ":" in line:
+                k, v = line.split(":", 1)
+                meta[k.strip()] = v.strip().strip('"').strip("'")
+        body = m.group(2)
+    # 본문 첫 h1은 제목과 중복이므로 제거
+    body = re.sub(r"^\s*#\s+.*?\n", "", body, count=1)
+    # 제목 바로 아래 이탤릭 메타줄 제거
+    body = re.sub(r"^\s*\*[^\n]*읽는 데[^\n]*\*\s*\n", "", body, count=1)
+    return meta, body
+
+
+def excerpt(body, n=110):
+    txt = re.sub(r"[#>*_`\[\]()!-]", "", body)
+    txt = re.sub(r"\s+", " ", txt).strip()
+    return (txt[:n] + "…") if len(txt) > n else txt
+
+
+
+def toc_html(posts, current=None):
+    """좌측 연재 목차."""
+    out = ['<aside><div class="side-h">연재 목차</div><ul class="toc">']
+    for q in posts:
+        cls = ' class="on"' if current and q["slug"] == current else ""
+        out.append(f'<li><a{cls} href="/blog/{q["slug"]}/">'
+                   f'<span class="n">{int(q["ep"] or 0):02d}</span>{html.escape(q["title"])}</a></li>')
+    out.append("</ul></aside>")
+    return "".join(out)
+
+
+def render(tpl, **kw):
+    out = tpl
+    for k, v in kw.items():
+        out = out.replace("{{%s}}" % k, v)
+    return out
+
+
+def main():
+    os.makedirs(POSTS_DIR, exist_ok=True)
+    md = markdown.Markdown(extensions=["extra", "sane_lists", "smarty"])
+
+    posts = []
+    for fn in sorted(os.listdir(POSTS_DIR)):
+        if not fn.endswith(".md"):
+            continue
+        meta, body = parse(os.path.join(POSTS_DIR, fn))
+        md.reset()
+        posts.append({
+            "slug": os.path.splitext(fn)[0],
+            "title": meta.get("title", fn),
+            "ep": meta.get("episode", ""),
+            "rt": meta.get("reading_time", ""),
+            "date": meta.get("date", ""),
+            "html": md.convert(body),
+            "excerpt": excerpt(body),
+        })
+    posts.sort(key=lambda p: int(p["ep"] or 0))
+
+    # 각 글 페이지
+    for i, p in enumerate(posts):
+        prev = posts[i - 1] if i > 0 else None
+        nxt = posts[i + 1] if i < len(posts) - 1 else None
+        nav = '<div class="pnav">'
+        nav += (f'<a href="/blog/{prev["slug"]}/"><span class="lbl">이전</span>{html.escape(prev["title"])}</a>'
+                if prev else "<span></span>")
+        nav += (f'<a href="/blog/{nxt["slug"]}/" style="text-align:right"><span class="lbl">다음</span>{html.escape(nxt["title"])}</a>'
+                if nxt else "<span></span>")
+        nav += "</div>"
+
+        page = render(HEAD, TITLE=f'{p["title"]} — {SITE}', DESC=p["excerpt"],
+                      OGTYPE="article", CSS=CSS)
+        page += (f'<div class="shell">{toc_html(posts, p["slug"])}<main><article>'
+                 f'<div class="a-kicker">{SERIES} · {p["ep"]}편</div>'
+                 f'<h1>{html.escape(p["title"])}</h1>'
+                 f'<div class="a-meta">{p["date"]} · 읽는 데 {p["rt"]}</div>'
+                 f'<div class="body">{p["html"]}</div>{nav}</article></main></div>')
+        page += FOOT
+        d = os.path.join(BLOG_DIR, p["slug"])
+        os.makedirs(d, exist_ok=True)
+        open(os.path.join(d, "index.html"), "w", encoding="utf-8").write(page)
+
+    # 블로그 메인
+    idx = render(HEAD, TITLE=f"{SITE} — {TAGLINE}", DESC=SERIES_BLURB,
+                 OGTYPE="website", CSS=CSS)
+    idx += (f'<div class="shell">{toc_html(posts)}<main><section class="hero">'
+            f'<div class="kicker">연재 · {SERIES}</div>'
+            f'<h1>{TAGLINE}</h1><p>{SERIES_BLURB}</p></section><section class="list">')
+    for p in posts:
+        idx += (f'<a class="item" href="/blog/{p["slug"]}/">'
+                f'<div class="no">{int(p["ep"] or 0):02d}</div>'
+                f'<div><div class="t">{html.escape(p["title"])}</div>'
+                f'<p class="ex">{p["excerpt"]}</p>'
+                f'<div class="meta">{p["date"]} · {p["rt"]}</div></div></a>')
+    if not posts:
+        idx += '<p class="ex" style="padding:40px 0">아직 발행된 글이 없습니다.</p>'
+    idx += "</section></main></div>" + FOOT
+    open(os.path.join(ROOT, "index.html"), "w", encoding="utf-8").write(idx)
+
+    print(f"빌드 완료: {len(posts)}편")
+    for p in posts:
+        print(f"  {int(p['ep'] or 0):02d}  /blog/{p['slug']}/  {p['title']}")
+
+
+if __name__ == "__main__":
+    main()

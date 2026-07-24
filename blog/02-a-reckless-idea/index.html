@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>폰으로 해석한다는 무모한 생각 — Numpilot</title>
+<meta name="description" content="계산기의 계보 공학 계산이 어디서 이루어졌는지를 따라가 보면, 기계는 계속 작아졌다. 처음에는 건물만 한 컴퓨터였다. 계산을 하려면 그 방에 찾아가야 했다. 다음은 워크스테이션이었다. 연구실 한구석…">
+<meta property="og:title" content="폰으로 해석한다는 무모한 생각 — Numpilot">
+<meta property="og:description" content="계산기의 계보 공학 계산이 어디서 이루어졌는지를 따라가 보면, 기계는 계속 작아졌다. 처음에는 건물만 한 컴퓨터였다. 계산을 하려면 그 방에 찾아가야 했다. 다음은 워크스테이션이었다. 연구실 한구석…">
+<meta property="og:type" content="article">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="/assets/logo.png">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+:root{
+  --bg:#ffffff; --alt:#f7f9fb; --line:#e5e9ef; --line2:#d3dae3;
+  --fg:#1a2029; --dim:#5b6675; --faint:#8d97a5;
+  --accent:#1d6fd6; --accent-soft:#eef4fd;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace;
+  --sans:Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);
+  font-size:17px;line-height:1.78;letter-spacing:-.004em;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline;text-underline-offset:3px}
+
+/* 핸드북 2단 레이아웃 */
+.shell{max-width:1120px;margin:0 auto;padding:0 26px;display:grid;
+  grid-template-columns:236px minmax(0,1fr);gap:56px;align-items:start}
+.solo{max-width:1120px;margin:0 auto;padding:0 26px}
+
+header{border-bottom:1px solid var(--line);background:var(--bg);position:sticky;top:0;z-index:30}
+.hd{max-width:1120px;margin:0 auto;padding:0 26px;display:flex;align-items:center;
+  justify-content:space-between;height:58px}
+.brand{font-size:16px;font-weight:750;letter-spacing:-.02em;color:var(--fg)}
+.brand:hover{text-decoration:none}
+nav a{font-size:14px;color:var(--dim);margin-left:20px}
+nav a:hover{color:var(--accent);text-decoration:none}
+
+/* 사이드바 목차 */
+aside{position:sticky;top:82px;padding:34px 0 40px;font-size:14px}
+.side-h{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--faint);
+  text-transform:uppercase;margin-bottom:14px;font-weight:600}
+.toc{list-style:none;margin:0;padding:0;border-left:2px solid var(--line);}
+.toc li{margin:0}
+.toc a{display:block;padding:7px 0 7px 14px;color:var(--dim);line-height:1.5;
+  margin-left:-2px;border-left:2px solid transparent}
+.toc a:hover{color:var(--accent);text-decoration:none;background:var(--accent-soft)}
+.toc a.on{color:var(--accent);font-weight:650;border-left-color:var(--accent);
+  background:var(--accent-soft)}
+.toc .n{font-family:var(--mono);font-size:11.5px;color:var(--faint);margin-right:7px}
+.toc a.on .n{color:var(--accent)}
+
+/* index */
+.hero{padding:52px 0 30px}
+.kicker{display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  color:var(--accent);text-transform:uppercase;font-weight:650;
+  background:var(--accent-soft);padding:5px 10px;border-radius:4px;margin-bottom:18px}
+.hero h1{font-size:34px;line-height:1.32;margin:0 0 16px;letter-spacing:-.028em;font-weight:750}
+.hero p{color:var(--dim);font-size:16.5px;margin:0;max-width:42em;line-height:1.75}
+.list{padding:6px 0 80px}
+.item{display:grid;grid-template-columns:44px 1fr;gap:16px;padding:22px 0;
+  border-top:1px solid var(--line);color:inherit}
+.item:hover{text-decoration:none}
+.item:hover .t{color:var(--accent)}
+.no{font-family:var(--mono);font-size:13px;color:var(--faint);font-weight:600;padding-top:3px}
+.t{font-size:19px;font-weight:700;margin:0 0 7px;letter-spacing:-.018em;line-height:1.42;
+  color:var(--fg);transition:color .15s}
+.ex{color:var(--dim);font-size:15.5px;line-height:1.7;margin:0}
+.meta{font-family:var(--mono);font-size:11.5px;color:var(--faint);margin-top:9px}
+
+/* article */
+article{padding:34px 0 40px;max-width:720px}
+.a-kicker{font-family:var(--mono);font-size:11.5px;letter-spacing:.13em;color:var(--accent);
+  text-transform:uppercase;font-weight:650;margin-bottom:14px}
+article h1{font-size:31px;line-height:1.34;margin:0 0 14px;letter-spacing:-.03em;font-weight:750}
+.a-meta{font-family:var(--mono);font-size:12px;color:var(--faint);
+  padding-bottom:24px;border-bottom:1px solid var(--line);margin-bottom:34px}
+.body h2{font-size:21px;margin:46px 0 14px;letter-spacing:-.02em;font-weight:750;line-height:1.42;
+  padding-top:4px}
+.body h3{font-size:18px;margin:32px 0 10px;font-weight:700}
+.body p{margin:0 0 21px}
+.body strong{font-weight:750}
+.body em{color:var(--dim);font-style:italic}
+.body ul,.body ol{padding-left:22px;margin:0 0 21px}
+.body li{margin-bottom:7px}
+.body blockquote{margin:26px 0;padding:16px 20px;background:var(--alt);
+  border-left:3px solid var(--accent);border-radius:0 6px 6px 0;color:var(--dim)}
+.body blockquote p{margin:0 0 10px}
+.body blockquote p:last-child{margin:0}
+.body code{font-family:var(--mono);font-size:.87em;background:var(--alt);
+  border:1px solid var(--line);border-radius:4px;padding:1.5px 6px;color:#0f5bb5}
+.body pre{background:var(--alt);border:1px solid var(--line);border-radius:8px;
+  padding:16px 18px;overflow-x:auto;margin:24px 0}
+.body pre code{background:none;border:0;padding:0;font-size:13.5px;line-height:1.7}
+.body hr{border:0;border-top:1px solid var(--line);margin:40px 0}
+.body img{max-width:100%;height:auto;border-radius:6px;margin:24px 0;border:1px solid var(--line)}
+.body table{width:100%;border-collapse:collapse;margin:24px 0;font-size:15.5px;
+  display:block;overflow-x:auto}
+.body th,.body td{border:1px solid var(--line);padding:9px 12px;text-align:left}
+.body th{background:var(--alt);font-weight:700}
+
+.pnav{display:flex;justify-content:space-between;gap:16px;
+  border-top:1px solid var(--line);padding:24px 0 0;margin-top:44px}
+.pnav a{font-size:15px;max-width:46%;font-weight:600}
+.pnav .lbl{display:block;font-family:var(--mono);font-size:10.5px;color:var(--faint);
+  letter-spacing:.12em;text-transform:uppercase;margin-bottom:5px;font-weight:600}
+footer{border-top:1px solid var(--line);margin-top:56px;padding:24px 0 44px;
+  color:var(--faint);font-size:12.5px;font-family:var(--mono)}
+
+@media(max-width:900px){
+  .shell{grid-template-columns:1fr;gap:0}
+  aside{position:static;padding:22px 0 6px;border-bottom:1px solid var(--line);margin-bottom:8px}
+  .toc{display:flex;gap:6px;overflow-x:auto;border-left:0;padding-bottom:6px}
+  .toc a{white-space:nowrap;border:1px solid var(--line);border-radius:20px;
+    padding:5px 12px;margin:0}
+  .toc a.on{border-color:var(--accent)}
+  article{padding-top:26px}
+}
+@media(max-width:640px){
+  body{font-size:16.5px}
+  .hero{padding:36px 0 24px}
+  .hero h1{font-size:26px}
+  article h1{font-size:25px}
+  .body h2{font-size:19.5px}
+  .t{font-size:17.5px}
+  .item{grid-template-columns:34px 1fr;gap:12px}
+  nav a{margin-left:13px;font-size:13px}
+}
+</style>
+</head>
+<body>
+<header><div class="hd">
+  <a class="brand" href="/">Numpilot</a>
+  <nav><a href="/">블로그</a><a href="/about/">소개</a></nav>
+</div></header>
+<div class="shell"><aside><div class="side-h">연재 목차</div><ul class="toc"><li><a href="/blog/01-why-one-day/"><span class="n">01</span>해석 한 번 돌리는 데 왜 하루가 걸릴까</a></li><li><a class="on" href="/blog/02-a-reckless-idea/"><span class="n">02</span>폰으로 해석한다는 무모한 생각</a></li><li><a href="/blog/03-the-distance/"><span class="n">03</span>질문하는 사람과 계산하는 사람 사이의 거리</a></li><li><a href="/blog/04-where-should-it-run/"><span class="n">04</span>계산은 어디서 일어나야 하는가</a></li></ul></aside><main><article><div class="a-kicker">손안의 수치해석 · 2편</div><h1>폰으로 해석한다는 무모한 생각</h1><div class="a-meta">2026-07-25 · 읽는 데 9분</div><div class="body"><h2>계산기의 계보</h2>
+<p>공학 계산이 어디서 이루어졌는지를 따라가 보면, 기계는 계속 작아졌다.</p>
+<p>처음에는 건물만 한 컴퓨터였다. 계산을 하려면 그 방에 찾아가야 했다. 다음은 워크스테이션이었다. 연구실 한구석에 놓인 비싼 기계 앞에 순서대로 줄을 섰다. 그다음이 개인용 컴퓨터였고, 지금은 노트북에서 웬만한 해석이 돌아간다.</p>
+<p>방 → 연구실 → 책상 → 무릎 위.</p>
+<p>그러면 다음은 어디인가. 주머니다.</p>
+<p>이 흐름만 놓고 보면 휴대폰에서 해석을 돌리자는 발상이 그렇게 이상하지 않다. 그런데 실제로 그렇게 하는 사람은 거의 없다. 이유가 있다.</p>
+<h2>폰은 해석에 최악의 기계다</h2>
+<p>냉정하게 보면 휴대폰은 수치해석에 어울리지 않는다. 이유를 하나씩 세어보면 오히려 하지 말아야 할 근거가 더 많다.</p>
+<p><strong>메모리가 작다.</strong> 해석은 격자의 모든 지점에 대한 값을 동시에 들고 있어야 한다. 100만 개 지점이면 100만 개의 숫자를 메모리에 올려두고, 계산 과정에서 그 두세 배를 더 쓴다. 데스크톱에서는 신경 쓸 일이 아니지만 휴대폰에서는 앱이 강제 종료되는 이유가 된다.</p>
+<p><strong>전력에 제약이 있다.</strong> 노트북은 전원에 꽂아두고 몇 시간이든 계산을 돌릴 수 있다. 휴대폰은 몇 분만 전력을 몰아 써도 뜨거워지고, 뜨거워지면 운영체제가 성능을 스스로 낮춘다. 계산을 오래 돌릴수록 느려지는 기계인 셈이다.</p>
+<p><strong>화면이 작다.</strong> 해석 결과는 대개 그림으로 본다. 온도 분포, 응력 분포, 유동장. 27인치 모니터에서 보던 것을 6인치에 담으면 정보가 사라진다.</p>
+<p><strong>입력이 불편하다.</strong> 좌표를 찍고, 재료를 고르고, 경계조건을 지정하는 일은 마우스와 키보드에 최적화된 작업이다. 손가락으로 하기에 좋은 일이 아니다.</p>
+<p>이 넷 중 앞의 둘은 기술이 해결해 줄 여지가 있다. 칩은 계속 빨라지고 있고, 문제 크기를 줄이면 메모리도 감당할 수 있다.</p>
+<p>문제는 뒤의 둘이다. <strong>화면과 입력은 기계의 성능이 아니라 사람과 기계 사이의 문제</strong>라서, 칩이 빨라져도 그대로 남는다.</p>
+<h2>그런데 왜 굳이</h2>
+<p>그럼에도 폰을 고집한 이유는 성능 때문이 아니었다. <strong>거리</strong> 때문이었다.</p>
+<p>앞 편에서 이야기한 구조를 다시 떠올려보자. 질문을 던지는 사람과 계산을 하는 사람이 분리되어 있고, 그 사이의 왕복에 며칠이 걸린다. 그래서 사소한 궁금증은 질문조차 되지 못한다.</p>
+<p>이 거리를 만드는 것은 계산 속도가 아니다. <strong>접근성</strong>이다.</p>
+<p>해석을 하려면 전용 소프트웨어가 깔린 특정 컴퓨터 앞에 앉아야 하고, 그 소프트웨어를 다룰 줄 알아야 하고, 라이선스가 있어야 한다. 이 세 조건이 모두 갖춰지는 순간은 하루에 몇 번 오지 않는다. 대부분의 궁금증은 그 순간이 오기 전에 잊힌다.</p>
+<p>반면 휴대폰은 언제나 손에 있다. 회의 중에도, 현장에서도, 지하철에서도.</p>
+<p><strong>&ldquo;지금 이 자리에서 확인할 수 있는가.&rdquo;</strong> 우리가 붙잡은 질문은 이것 하나였다.</p>
+<h2>크기를 바꾸면 종류가 바뀐다</h2>
+<p>여기서 중요한 전환이 하나 있다. 기계가 작아지면 같은 일을 작게 하는 게 아니라, <strong>다른 일을 하게 된다.</strong></p>
+<p>카메라가 그랬다. 필름 카메라 시절 사진은 특별한 날의 기록이었다. 필름값과 현상비가 들었고, 한 컷을 신중하게 찍었다. 휴대폰에 카메라가 들어오면서 사진은 다른 것이 되었다. 주차한 자리를 찍고, 영수증을 찍고, 냉장고 안을 찍는다. <strong>기록이 아니라 메모가 되었다.</strong></p>
+<p>해석도 같은 변화를 겪을 수 있다고 봤다.</p>
+<p>지금의 해석은 필름 사진에 가깝다. 비싸고, 신중하게 준비하고, 한 번에 제대로 뽑아야 한다. 그래서 <strong>확신이 있을 때만</strong> 돌린다.</p>
+<p>우리가 원한 것은 메모 같은 해석이다. 정밀하지 않아도 좋으니 지금 당장 대략의 답을 주는 것. &ldquo;이 방향이 맞나?&rdquo;를 30초 만에 확인하고, 아니면 버리는 것.</p>
+<p><strong>정밀한 답 하나보다, 빠른 답 열 개가 설계를 더 멀리 데려간다.</strong></p>
+<p>그러니 폰에서 돌리겠다는 결정은 성능 경쟁이 아니었다. <strong>다른 종류의 해석을 만들겠다는 선언</strong>에 가까웠다.</p>
+<h2>그래서 진짜 문제가 드러났다</h2>
+<p>목표를 이렇게 잡고 나니, 앞에서 세었던 네 가지 약점의 무게가 달라졌다.</p>
+<p>메모리와 전력은 문제를 작게 잡으면 된다. 처음부터 2차원, 단순 형상, 제한된 물리 현상만 다루기로 하면 감당할 수 있다. 정밀함을 포기하기로 했으니 이건 타협 가능한 손실이다.</p>
+<p>화면도 생각보다 큰 문제가 아니었다. 30초 만에 방향만 확인하는 용도라면 필요한 것은 정교한 3차원 시각화가 아니라 <strong>&ldquo;뜨거운가 아닌가&rdquo;</strong> 수준의 판단이다. 그건 작은 화면으로도 충분하다.</p>
+<p>남은 것은 <strong>입력</strong>이었다. 그리고 이게 진짜 벽이었다.</p>
+<p>해석 조건을 지정하는 일은 항목이 많다. 형상, 치수, 재료, 물성값, 경계조건, 초기조건, 시간 범위, 격자 크기. 데스크톱 프로그램은 이걸 수십 개의 입력창과 드롭다운으로 받는다. 그 화면을 휴대폰에 그대로 옮기면 아무도 쓰지 않을 것이 분명했다.</p>
+<p>버튼을 줄이고 화면을 다시 그리는 정도로 해결될 일이 아니었다. <strong>입력 방식 자체를 바꿔야 했다.</strong></p>
+<p>그런데 사람이 물리 문제를 설명하는 가장 자연스러운 방법은 이미 존재한다. 앞 편 마지막에 적었던 그것이다.</p>
+<blockquote>
+<p>&ldquo;알루미늄 팬인데 손잡이는 플라스틱이고, 바닥에서 200도로 가열될 때 손잡이 끝이 몇 도까지 오르는지&rdquo;</p>
+</blockquote>
+<p>사람은 이렇게 말한다. 입력창을 채우는 게 아니라, 문장으로 설명한다.</p>
+<p>그렇다면 이 문장을 그대로 받으면 되지 않을까. 화면에 입력창 대신 텍스트 상자 하나만 두고.</p>
+<p>말은 쉽다. 저 한 문장 안에 얼마나 많은 것이 생략되어 있는지 알기 전까지는.</p>
+<hr />
+<p><strong>다음 편 예고 —</strong> <em>질문하는 사람과 계산하는 사람 사이의 거리.</em> 왜 설계자가 직접 해석하지 못하게 되었는지, 그 분업이 언제 어떻게 굳어졌는지 따라가 본다.</p></div><div class="pnav"><a href="/blog/01-why-one-day/"><span class="lbl">이전</span>해석 한 번 돌리는 데 왜 하루가 걸릴까</a><a href="/blog/03-the-distance/" style="text-align:right"><span class="lbl">다음</span>질문하는 사람과 계산하는 사람 사이의 거리</a></div></article></main></div><footer><div class="solo">© Numpilot</div></footer>
+</body></html>
