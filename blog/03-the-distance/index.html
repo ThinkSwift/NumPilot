@@ -14,7 +14,7 @@
 <style>
 :root{
   --bg:#ffffff; --alt:#f7f9fb; --line:#e5e9ef; --line2:#d3dae3;
-  --fg:#1a2029; --dim:#5b6675; --faint:#8d97a5;
+  --fg:#1a2029; --dim:#5b6675; --faint:#8d97a5; --ghost:#a9b2be;
   --accent:#1d6fd6; --accent-soft:#eef4fd;
   --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace;
   --sans:Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Segoe UI",sans-serif;
@@ -28,7 +28,7 @@ a:hover{text-decoration:underline;text-underline-offset:3px}
 
 /* 핸드북 2단 레이아웃 */
 .shell{max-width:1120px;margin:0 auto;padding:0 26px;display:grid;
-  grid-template-columns:236px minmax(0,1fr);gap:56px;align-items:start}
+  grid-template-columns:250px minmax(0,1fr);gap:52px;align-items:start}
 .solo{max-width:1120px;margin:0 auto;padding:0 26px}
 
 header{border-bottom:1px solid var(--line);background:var(--bg);position:sticky;top:0;z-index:30}
@@ -36,48 +36,165 @@ header{border-bottom:1px solid var(--line);background:var(--bg);position:sticky;
   justify-content:space-between;height:58px}
 .brand{font-size:16px;font-weight:750;letter-spacing:-.02em;color:var(--fg)}
 .brand:hover{text-decoration:none}
-nav a{font-size:14px;color:var(--dim);margin-left:20px}
-nav a:hover{color:var(--accent);text-decoration:none}
+nav.top a{font-size:14px;color:var(--dim);margin-left:20px}
+nav.top a:hover{color:var(--accent);text-decoration:none}
 
-/* 사이드바 목차 */
-aside{position:sticky;top:82px;padding:34px 0 40px;font-size:14px}
+/* ── 사이드바 목차 ───────────────────────────────── */
+aside{position:sticky;top:82px;padding:30px 0 40px;font-size:14px;
+  max-height:calc(100vh - 104px);overflow-y:auto;overscroll-behavior:contain}
+.toc-cb{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.toc-bar{display:flex;align-items:center;gap:9px;margin-bottom:13px}
 .side-h{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--faint);
-  text-transform:uppercase;margin-bottom:14px;font-weight:600}
-.toc{list-style:none;margin:0;padding:0;border-left:2px solid var(--line);}
-.toc li{margin:0}
-.toc a{display:block;padding:7px 0 7px 14px;color:var(--dim);line-height:1.5;
-  margin-left:-2px;border-left:2px solid transparent}
-.toc a:hover{color:var(--accent);text-decoration:none;background:var(--accent-soft)}
-.toc a.on{color:var(--accent);font-weight:650;border-left-color:var(--accent);
-  background:var(--accent-soft)}
-.toc .n{font-family:var(--mono);font-size:11.5px;color:var(--faint);margin-right:7px}
-.toc a.on .n{color:var(--accent)}
+  text-transform:uppercase;font-weight:600}
+.toc-n{font-family:var(--mono);font-size:11px;color:var(--accent);font-weight:700;
+  background:var(--accent-soft);border-radius:3px;padding:2px 6px}
+.cv{flex:none;display:none;color:var(--faint)}
 
-/* index */
-.hero{padding:52px 0 30px}
+/* 진행 표시 */
+.prog{margin:0 0 15px}
+.prog .bar{height:4px;background:var(--line);border-radius:3px;overflow:hidden}
+.prog .bar i{display:block;height:100%;background:var(--accent);border-radius:3px}
+.prog .t{font-family:var(--mono);font-size:10.5px;color:var(--faint);margin-top:7px;
+  letter-spacing:.03em}
+
+/* 부(part) 그룹 */
+.toc{list-style:none;margin:0;padding:0}
+.pt{border-top:1px solid var(--line)}
+.pt:last-of-type{border-bottom:1px solid var(--line)}
+.pt>summary{display:flex;align-items:center;gap:8px;padding:9px 2px;cursor:pointer;
+  list-style:none;font-size:13.5px;font-weight:700;letter-spacing:-.012em;color:var(--fg)}
+.pt>summary::-webkit-details-marker{display:none}
+.pt>summary::marker{content:""}
+.pt>summary:hover{color:var(--accent)}
+.pt .pn{font-family:var(--mono);font-size:10.5px;font-weight:700;color:var(--accent);
+  background:var(--accent-soft);border-radius:3px;padding:2px 5px;flex:none;letter-spacing:.02em}
+.pt .ptt{flex:1;min-width:0;line-height:1.4;word-break:keep-all}
+.pt .pc{font-family:var(--mono);font-size:10px;color:var(--faint);flex:none}
+.pt .pcv{flex:none;color:var(--line2);transition:transform .18s}
+.pt[open]>summary .pcv{transform:rotate(180deg)}
+.pt.cur>summary{color:var(--accent)}
+.pt.cur .pn{background:var(--accent);color:#fff}
+.items{list-style:none;margin:0 0 9px;padding:0;border-left:2px solid var(--line);
+  margin-left:6px}
+.items li{margin:0}
+.items a,.items .soon{display:block;padding:6px 0 6px 12px;line-height:1.5;font-size:13.5px;
+  margin-left:-2px;border-left:2px solid transparent;word-break:keep-all}
+.items a{color:var(--dim)}
+.items a:hover{color:var(--accent);background:var(--accent-soft);text-decoration:none}
+.items a.on{color:var(--accent);font-weight:700;border-left-color:var(--accent);
+  background:var(--accent-soft)}
+.items .soon{color:var(--ghost);cursor:default}
+.items .n{font-family:var(--mono);font-size:11px;color:var(--faint);margin-right:7px}
+.items .soon .n{color:#c5ccd6}
+.items a.on .n{color:var(--accent)}
+.toc-foot{font-family:var(--mono);font-size:10px;color:var(--faint);margin-top:12px;
+  letter-spacing:.03em;line-height:1.7}
+.toc-foot .dash{display:inline-block;width:16px;border-top:1px dashed var(--line2);
+  vertical-align:middle;margin-right:5px}
+
+/* ── index ───────────────────────────────────────── */
+.hero{padding:48px 0 26px}
 .kicker{display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:.14em;
   color:var(--accent);text-transform:uppercase;font-weight:650;
   background:var(--accent-soft);padding:5px 10px;border-radius:4px;margin-bottom:18px}
 .hero h1{font-size:34px;line-height:1.32;margin:0 0 16px;letter-spacing:-.028em;font-weight:750}
 .hero p{color:var(--dim);font-size:16.5px;margin:0;max-width:42em;line-height:1.75}
-.list{padding:6px 0 80px}
-.item{display:grid;grid-template-columns:44px 1fr;gap:16px;padding:22px 0;
+
+/* ── 핵심 요약 ───────────────────────────────────── */
+.sum{border:1px solid var(--line);border-radius:12px;padding:24px 24px 26px;
+  margin:8px 0 42px;background:linear-gradient(180deg,#fbfcfe 0%,#ffffff 55%)}
+.sum-h{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.sum-h .lbl{font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--accent);font-weight:700;flex:none}
+.sum-h .rule{flex:1;height:1px;background:var(--line)}
+.sum-h .wip{font-family:var(--mono);font-size:10px;color:var(--faint);flex:none;
+  border:1px solid var(--line2);border-radius:20px;padding:2px 9px}
+.sum-lead{font-size:19.5px;line-height:1.66;font-weight:700;letter-spacing:-.025em;
+  margin:0 0 10px;max-width:34em;word-break:keep-all}
+.sum-lead b{color:var(--accent);font-weight:700}
+.sum-sub{color:var(--dim);font-size:15.5px;line-height:1.75;margin:0 0 26px;max-width:44em}
+
+.flow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:30px;margin:0 0 24px}
+.step{position:relative;min-width:0;background:#fff;border:1px solid var(--line);
+  border-radius:10px;padding:15px 16px 17px}
+.step::after{content:"→";position:absolute;right:-22px;top:50%;transform:translateY(-50%);
+  font-family:var(--mono);font-size:15px;font-weight:700;color:#b6bfcb;line-height:1}
+.step:last-child::after{content:none}
+.step .sn{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.08em;
+  color:var(--faint);font-weight:700;margin-bottom:9px;text-transform:uppercase}
+.step h3{font-size:16px;margin:0 0 9px;font-weight:750;letter-spacing:-.022em;line-height:1.4;
+  word-break:keep-all}
+.step p{margin:0;font-size:14.5px;line-height:1.66;color:var(--dim)}
+.step .say{display:block;font-family:var(--mono);font-size:12.5px;line-height:1.7;
+  color:var(--fg);background:var(--alt);border:1px solid var(--line);border-radius:7px;
+  padding:9px 11px;margin:0 0 11px;word-break:keep-all}
+.step.mid{background:var(--alt);border-color:var(--line2)}
+.step.mid .gears{list-style:none;margin:0 0 11px;padding:0;
+  border-left:2px solid var(--line2)}
+.step.mid .gears li{font-family:var(--mono);font-size:11.5px;color:var(--dim);
+  padding:3px 0 3px 10px;line-height:1.55;letter-spacing:-.02em;word-break:keep-all}
+.step .out{list-style:none;margin:0 0 11px;padding:0}
+.step .out li{font-size:13.5px;color:var(--fg);padding:3px 0 3px 14px;position:relative;
+  line-height:1.55;word-break:keep-all}
+.step .out li::before{content:"›";position:absolute;left:2px;color:var(--accent);font-weight:700}
+
+.cmp{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:0 0 22px}
+.cmp .c{min-width:0;border:1px solid var(--line);border-radius:10px;padding:14px 16px 15px}
+.cmp .c.cut{border-left:3px solid var(--accent)}
+.cmp .c.keep{border-left:3px solid var(--line2)}
+.cmp h4{margin:0 0 9px;font-size:13.5px;font-weight:750;letter-spacing:-.015em;
+  word-break:keep-all}
+.cmp .c.cut h4{color:var(--accent)}
+.cmp ul{list-style:none;margin:0;padding:0}
+.cmp li{font-size:14px;color:var(--dim);padding:3px 0 3px 13px;position:relative;line-height:1.6;
+  word-break:keep-all}
+.cmp li::before{content:"·";position:absolute;left:3px;color:var(--faint);font-weight:700}
+
+.sum-close{border-top:1px solid var(--line);padding-top:17px;font-size:15.5px;
+  line-height:1.72;color:var(--fg);margin:0;max-width:46em}
+.sum-close strong{font-weight:750}
+.sum-close .th{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--faint);font-weight:700;margin-bottom:8px}
+
+/* ── 글 목록 ─────────────────────────────────────── */
+.list-h{display:flex;align-items:center;gap:12px;margin:0 0 2px}
+.list-h .lbl{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--faint);font-weight:700;flex:none}
+.list-h .rule{flex:1;height:1px;background:var(--line)}
+.list{padding:6px 0 4px}
+.item{display:grid;grid-template-columns:44px minmax(0,1fr);gap:16px;padding:22px 0;
   border-top:1px solid var(--line);color:inherit}
 .item:hover{text-decoration:none}
 .item:hover .t{color:var(--accent)}
 .no{font-family:var(--mono);font-size:13px;color:var(--faint);font-weight:600;padding-top:3px}
 .t{font-size:19px;font-weight:700;margin:0 0 7px;letter-spacing:-.018em;line-height:1.42;
-  color:var(--fg);transition:color .15s}
+  color:var(--fg);transition:color .15s;word-break:keep-all}
 .ex{color:var(--dim);font-size:15.5px;line-height:1.7;margin:0}
 .meta{font-family:var(--mono);font-size:11.5px;color:var(--faint);margin-top:9px}
+.item .part{font-family:var(--mono);font-size:10.5px;color:var(--accent);
+  letter-spacing:.06em;margin-bottom:5px;display:block}
 
-/* article */
+.up{border-top:1px solid var(--line);padding:22px 0 72px}
+.up-h{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--faint);font-weight:700;margin-bottom:12px}
+.up-l{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0;margin:0}
+.up-l li{font-size:14px;color:var(--ghost);border:1px dashed var(--line2);border-radius:8px;
+  padding:6px 12px;line-height:1.5;word-break:keep-all}
+.up-l li .n{font-family:var(--mono);font-size:11px;margin-right:7px;color:#c5ccd6}
+
+/* ── article ─────────────────────────────────────── */
 article{padding:34px 0 40px;max-width:720px}
-.a-kicker{font-family:var(--mono);font-size:11.5px;letter-spacing:.13em;color:var(--accent);
+.a-kicker{font-family:var(--mono);font-size:11.5px;letter-spacing:.11em;color:var(--accent);
   text-transform:uppercase;font-weight:650;margin-bottom:14px}
+.a-kicker .sep{color:var(--line2);margin:0 7px}
 article h1{font-size:31px;line-height:1.34;margin:0 0 14px;letter-spacing:-.03em;font-weight:750}
 .a-meta{font-family:var(--mono);font-size:12px;color:var(--faint);
-  padding-bottom:24px;border-bottom:1px solid var(--line);margin-bottom:34px}
+  padding-bottom:12px;border-bottom:1px solid var(--line);margin-bottom:34px}
+.a-rail{display:flex;align-items:center;gap:10px;margin:0 0 12px}
+.a-rail .bar{flex:1;height:3px;background:var(--line);border-radius:2px;overflow:hidden}
+.a-rail .bar i{display:block;height:100%;background:var(--accent)}
+.a-rail .pos{font-family:var(--mono);font-size:10.5px;color:var(--faint);flex:none;
+  letter-spacing:.04em}
 .body h2{font-size:21px;margin:46px 0 14px;letter-spacing:-.02em;font-weight:750;line-height:1.42;
   padding-top:4px}
 .body h3{font-size:18px;margin:32px 0 10px;font-weight:700}
@@ -102,41 +219,78 @@ article h1{font-size:31px;line-height:1.34;margin:0 0 14px;letter-spacing:-.03em
 .body th,.body td{border:1px solid var(--line);padding:9px 12px;text-align:left}
 .body th{background:var(--alt);font-weight:700}
 
-.pnav{display:flex;justify-content:space-between;gap:16px;
-  border-top:1px solid var(--line);padding:24px 0 0;margin-top:44px}
-.pnav a{font-size:15px;max-width:46%;font-weight:600}
-.pnav .lbl{display:block;font-family:var(--mono);font-size:10.5px;color:var(--faint);
-  letter-spacing:.12em;text-transform:uppercase;margin-bottom:5px;font-weight:600}
+/* 이전/다음 */
+.pnav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;
+  border-top:1px solid var(--line);padding:26px 0 0;margin-top:44px}
+.nv{display:block;min-width:0;border:1px solid var(--line);border-radius:10px;
+  padding:13px 15px;color:inherit}
+a.nv:hover{border-color:var(--accent);background:var(--accent-soft);text-decoration:none}
+.nv.next{text-align:right}
+.nv .lbl{display:block;font-family:var(--mono);font-size:10px;color:var(--faint);
+  letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;font-weight:700}
+.nv .nt{font-size:14.5px;font-weight:700;line-height:1.5;letter-spacing:-.015em;color:var(--fg);
+  word-break:keep-all}
+a.nv:hover .nt{color:var(--accent)}
+.nv.off{border-style:dashed}
+.nv.off .nt{color:var(--ghost);font-weight:650}
+.nv.blank{border:0;padding:0}
+.a-back{text-align:center;margin-top:20px;font-family:var(--mono);font-size:11.5px;
+  letter-spacing:.04em}
+
 footer{border-top:1px solid var(--line);margin-top:56px;padding:24px 0 44px;
   color:var(--faint);font-size:12.5px;font-family:var(--mono)}
 
+/* ── 태블릿/모바일 ───────────────────────────────── */
 @media(max-width:900px){
-  .shell{grid-template-columns:1fr;gap:0}
-  aside{position:static;padding:22px 0 6px;border-bottom:1px solid var(--line);margin-bottom:8px}
-  .toc{display:flex;gap:6px;overflow-x:auto;border-left:0;padding-bottom:6px}
-  .toc a{white-space:nowrap;border:1px solid var(--line);border-radius:20px;
-    padding:5px 12px;margin:0}
-  .toc a.on{border-color:var(--accent)}
-  article{padding-top:26px}
+  .shell{grid-template-columns:minmax(0,1fr);gap:0}
+  aside{position:static;padding:18px 0 0;max-height:none;overflow:visible;
+    border-bottom:1px solid var(--line);margin-bottom:4px;padding-bottom:18px}
+  /* 모바일에서는 목차 전체를 접는다 (체크박스 토글, JS 없음) */
+  .toc-bar{margin-bottom:0;border:1px solid var(--line);border-radius:9px;
+    padding:11px 13px;background:var(--alt);cursor:pointer;
+    -webkit-tap-highlight-color:transparent}
+  .toc-bar .side-h{flex:1}
+  .cv{display:block;transition:transform .18s}
+  .toc-cb:checked ~ .toc-bar{border-color:var(--accent);background:var(--accent-soft)}
+  .toc-cb:checked ~ .toc-bar .cv{transform:rotate(180deg);color:var(--accent)}
+  .toc-cb:focus-visible ~ .toc-bar{outline:2px solid var(--accent);outline-offset:2px}
+  .toc-panel{display:none;padding-top:14px}
+  .toc-cb:checked ~ .toc-panel{display:block}
+  .items a,.items .soon{padding:9px 0 9px 12px}
+  .pt>summary{padding:12px 2px}
+  article{padding-top:24px}
+}
+@media(max-width:760px){
+  .flow{grid-template-columns:minmax(0,1fr);gap:28px}
+  .step::after{content:"↓";right:auto;left:24px;top:auto;bottom:-21px;transform:none}
 }
 @media(max-width:640px){
   body{font-size:16.5px}
-  .hero{padding:36px 0 24px}
+  .shell,.solo,.hd{padding:0 18px}
+  .hero{padding:32px 0 22px}
   .hero h1{font-size:26px}
   article h1{font-size:25px}
   .body h2{font-size:19.5px}
   .t{font-size:17.5px}
-  .item{grid-template-columns:34px 1fr;gap:12px}
-  nav a{margin-left:13px;font-size:13px}
+  .item{grid-template-columns:32px minmax(0,1fr);gap:12px}
+  nav.top a{margin-left:13px;font-size:13px}
+  .sum{padding:20px 17px 22px;border-radius:11px;margin-bottom:34px}
+  .sum-lead{font-size:17.5px}
+  .sum-sub{font-size:15px;margin-bottom:22px}
+  .sum-h .wip{display:none}
+  .cmp{grid-template-columns:minmax(0,1fr)}
+  .pnav{grid-template-columns:minmax(0,1fr)}
+  .nv.next{text-align:left}
+  .nv.blank{display:none}
 }
 </style>
 </head>
 <body>
 <header><div class="hd">
   <a class="brand" href="/">Numpilot</a>
-  <nav><a href="/">블로그</a><a href="/about/">소개</a></nav>
+  <nav class="top"><a href="/">블로그</a><a href="/about/">소개</a></nav>
 </div></header>
-<div class="shell"><aside><div class="side-h">연재 목차</div><ul class="toc"><li><a href="/blog/01-why-one-day/"><span class="n">01</span>해석 한 번 돌리는 데 왜 하루가 걸릴까</a></li><li><a href="/blog/02-a-reckless-idea/"><span class="n">02</span>폰으로 해석한다는 무모한 생각</a></li><li><a class="on" href="/blog/03-the-distance/"><span class="n">03</span>질문하는 사람과 계산하는 사람 사이의 거리</a></li><li><a href="/blog/04-where-should-it-run/"><span class="n">04</span>계산은 어디서 일어나야 하는가</a></li></ul></aside><main><article><div class="a-kicker">손안의 수치해석 · 3편</div><h1>질문하는 사람과 계산하는 사람 사이의 거리</h1><div class="a-meta">2026-07-26 · 읽는 데 8분</div><div class="body"><h2>분업은 왜 생겼나</h2>
+<div class="shell"><aside><input type="checkbox" id="toctoggle" class="toc-cb"><label class="toc-bar" for="toctoggle"><span class="side-h">연재 목차</span><span class="toc-n">30/30</span><svg class="cv" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></label><div class="toc-panel"><div class="prog"><div class="bar"><i style="width:100%"></i></div><div class="t">전체 30편 중 30편 발행</div></div><div class="toc"><details class="pt cur" open><summary><span class="pn">1부</span><span class="ptt">문제</span><span class="pc">5/5</span><svg class="pcv" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><ul class="items"><li><a href="/blog/01-why-one-day/"><span class="n">01</span>해석 한 번 돌리는 데 왜 하루가 걸릴까</a></li><li><a href="/blog/02-a-reckless-idea/"><span class="n">02</span>폰으로 해석한다는 무모한 생각</a></li><li><a class="on" aria-current="page" href="/blog/03-the-distance/"><span class="n">03</span>질문하는 사람과 계산하는 사람 사이의 거리</a></li><li><a href="/blog/04-where-should-it-run/"><span class="n">04</span>계산은 어디서 일어나야 하는가</a></li><li><a href="/blog/05-what-we-built-first/"><span class="n">05</span>처음 만든 것, 그리고 왜 실패했나</a></li></ul></details><details class="pt"><summary><span class="pn">2부</span><span class="ptt">언어의 문제 — DSL</span><span class="pc">8/8</span><svg class="pcv" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><ul class="items"><li><a href="/blog/06-how-people-speak-physics/"><span class="n">06</span>사람은 물리를 어떻게 말하는가</a></li><li><a href="/blog/07-what-is-omitted/"><span class="n">07</span>\&quot;알루미늄 팬\&quot; 한마디에 생략된 것들</a></li><li><a href="/blog/08-what-is-a-dsl/"><span class="n">08</span>DSL이란 무엇인가 — 좁은 언어의 힘</a></li><li><a href="/blog/09-design-what-to-keep/"><span class="n">09</span>설계 ①: 무엇을 표현하고 무엇을 버릴까</a></li><li><a href="/blog/10-design-ambiguity/"><span class="n">10</span>설계 ②: 애매함을 어떻게 다룰까</a></li><li><a href="/blog/11-units-and-frames/"><span class="n">11</span>설계 ③: 단위와 좌표계라는 함정</a></li><li><a href="/blog/12-translation-layer/"><span class="n">12</span>자연어에서 DSL로 — 번역층의 구조</a></li><li><a href="/blog/13-vibe-coding/"><span class="n">13</span>vibe coding이 바꾼 것, 그리고 바꾸지 못한 것</a></li></ul></details><details class="pt"><summary><span class="pn">3부</span><span class="ptt">계산의 기초</span><span class="pc">7/7</span><svg class="pcv" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><ul class="items"><li><a href="/blog/14-cutting-the-grid/"><span class="n">14</span>격자를 자른다는 것 (FDM)</a></li><li><a href="/blog/15-first-analysis/"><span class="n">15</span>열전달, 첫 번째 해석</a></li><li><a href="/blog/16-boundary-conditions/"><span class="n">16</span>경계조건이 결과를 바꾼다</a></li><li><a href="/blog/17-complex-shapes-fem/"><span class="n">17</span>형상이 복잡해지면 (FEM)</a></li><li><a href="/blog/18-what-convergence-means/"><span class="n">18</span>수렴한다는 것은 무슨 뜻인가</a></li><li><a href="/blog/19-phone-tradeoffs/"><span class="n">19</span>폰의 한계와 타협 — 무엇을 포기했나</a></li><li><a href="/blog/20-verification/"><span class="n">20</span>검증: 답이 맞다는 걸 어떻게 아는가</a></li></ul></details><details class="pt"><summary><span class="pn">4부</span><span class="ptt">AI로 넓히기</span><span class="pc">7/7</span><svg class="pcv" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><ul class="items"><li><a href="/blog/21-why-ai/"><span class="n">21</span>왜 AI인가 — 반복이 만드는 기회</a></li><li><a href="/blog/22-pinn/"><span class="n">22</span>PINN: 물리 법칙을 손실함수에 넣기</a></li><li><a href="/blog/23-why-fourier/"><span class="n">23</span>왜 하필 푸리에인가</a></li><li><a href="/blog/24-fno/"><span class="n">24</span>FNO: 답이 아니라 연산자를 배운다</a></li><li><a href="/blog/25-data-as-asset/"><span class="n">25</span>데이터가 자산이 되는 구조</a></li><li><a href="/blog/26-filtering-wrong-answers/"><span class="n">26</span>틀린 답을 걸러내는 설계 — 신뢰의 문제</a></li><li><a href="/blog/27-roadmap/"><span class="n">27</span>단계적 확장 로드맵: 검증된 솔버에서 AI 해석으로</a></li></ul></details><details class="pt"><summary><span class="pn">5부</span><span class="ptt">제품과 앞으로</span><span class="pc">3/3</span><svg class="pcv" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><ul class="items"><li><a href="/blog/28-numpilot-anatomy/"><span class="n">28</span>Numpilot 해부 — Solver Lab / Learn / Models / Projects</a></li><li><a href="/blog/29-education-axis/"><span class="n">29</span>교육이라는 또 하나의 축</a></li><li><a href="/blog/30-the-era/"><span class="n">30</span>개발자가 직접 해석하는 시대</a></li></ul></details></div><div class="toc-foot"><span class="dash"></span>회색은 연재 예정 편</div></div></aside><main><article><div class="a-kicker">손안의 수치해석<span class="sep">/</span>1부 문제</div><h1>질문하는 사람과 계산하는 사람 사이의 거리</h1><div class="a-rail"><span class="pos">03 / 30</span><span class="bar"><i style="width:10%"></i></span></div><div class="a-meta">2026-07-26 · 읽는 데 8분</div><div class="body"><h2>분업은 왜 생겼나</h2>
 <p>처음부터 해석이 별도의 직무였던 것은 아니다.</p>
 <p>계산이 손으로 이루어지던 시절, 설계자와 계산자는 대체로 같은 사람이었다. 구조물을 그린 사람이 하중을 계산했다. 계산은 설계의 일부였지 별도의 공정이 아니었다.</p>
 <p>분업을 만든 것은 <strong>도구의 복잡성</strong>이다.</p>
@@ -176,5 +330,5 @@ footer{border-top:1px solid var(--line);margin-top:56px;padding:24px 0 44px;
 <p>우리는 둘 다 하기로 했다. 다룰 수 있는 문제의 범위를 처음부터 좁게 잡고, 그 안에서는 사용자가 정하지 않은 것을 시스템이 합리적으로 채운다.</p>
 <p>여기서 자연스럽게 다음 질문이 나온다. 그 결정은 <strong>어디서</strong> 이루어져야 하는가. 사용자의 기기에서인가, 서버에서인가.</p>
 <hr />
-<p><strong>다음 편 예고 —</strong> <em>계산은 어디서 일어나야 하는가.</em> 서버로 보내면 편한데 왜 굳이 기기에서 돌리려 했는지, 그 선택의 대가와 이득을 따져본다.</p></div><div class="pnav"><a href="/blog/02-a-reckless-idea/"><span class="lbl">이전</span>폰으로 해석한다는 무모한 생각</a><a href="/blog/04-where-should-it-run/" style="text-align:right"><span class="lbl">다음</span>계산은 어디서 일어나야 하는가</a></div></article></main></div><footer><div class="solo">© Numpilot</div></footer>
+<p><strong>다음 편 예고 —</strong> <em>계산은 어디서 일어나야 하는가.</em> 서버로 보내면 편한데 왜 굳이 기기에서 돌리려 했는지, 그 선택의 대가와 이득을 따져본다.</p></div><div class="pnav"><a class="nv prev" href="/blog/02-a-reckless-idea/"><span class="lbl">이전 편</span><span class="nt">02. 폰으로 해석한다는 무모한 생각</span></a><a class="nv next" href="/blog/04-where-should-it-run/"><span class="lbl">다음 편</span><span class="nt">04. 계산은 어디서 일어나야 하는가</span></a></div><div class="a-back"><a href="/">← 연재 목차 전체 보기</a></div></article></main></div><footer><div class="solo">© Numpilot</div></footer>
 </body></html>

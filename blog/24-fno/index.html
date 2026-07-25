@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FNO: 답이 아니라 연산자를 배운다 — Numpilot</title>
+<meta name="description" content="무엇을 배우는가의 차이 이 편의 제목에 있는 "연산자"라는 말부터 풀어야 한다. 일반적인 기계학습은 숫자에서 숫자로 가는 관계를 배운다. 사진을 넣으면 "고양이"라는 답이 나오고, 조건 몇 개를 넣…">
+<meta property="og:title" content="FNO: 답이 아니라 연산자를 배운다 — Numpilot">
+<meta property="og:description" content="무엇을 배우는가의 차이 이 편의 제목에 있는 "연산자"라는 말부터 풀어야 한다. 일반적인 기계학습은 숫자에서 숫자로 가는 관계를 배운다. 사진을 넣으면 "고양이"라는 답이 나오고, 조건 몇 개를 넣…">
+<meta property="og:type" content="article">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="/assets/logo.png">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+:root{
+  --bg:#ffffff; --alt:#f7f9fb; --line:#e5e9ef; --line2:#d3dae3;
+  --fg:#1a2029; --dim:#5b6675; --faint:#8d97a5; --ghost:#a9b2be;
+  --accent:#1d6fd6; --accent-soft:#eef4fd;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace;
+  --sans:Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);
+  font-size:17px;line-height:1.78;letter-spacing:-.004em;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline;text-underline-offset:3px}
+
+/* 핸드북 2단 레이아웃 */
+.shell{max-width:1120px;margin:0 auto;padding:0 26px;display:grid;
+  grid-template-columns:250px minmax(0,1fr);gap:52px;align-items:start}
+.solo{max-width:1120px;margin:0 auto;padding:0 26px}
+
+header{border-bottom:1px solid var(--line);background:var(--bg);position:sticky;top:0;z-index:30}
+.hd{max-width:1120px;margin:0 auto;padding:0 26px;display:flex;align-items:center;
+  justify-content:space-between;height:58px}
+.brand{font-size:16px;font-weight:750;letter-spacing:-.02em;color:var(--fg)}
+.brand:hover{text-decoration:none}
+nav.top a{font-size:14px;color:var(--dim);margin-left:20px}
+nav.top a:hover{color:var(--accent);text-decoration:none}
+
+/* ── 사이드바 목차 ───────────────────────────────── */
+aside{position:sticky;top:82px;padding:30px 0 40px;font-size:14px;
+  max-height:calc(100vh - 104px);overflow-y:auto;overscroll-behavior:contain}
+.toc-cb{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.toc-bar{display:flex;align-items:center;gap:9px;margin-bottom:13px}
+.side-h{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--faint);
+  text-transform:uppercase;font-weight:600}
+.toc-n{font-family:var(--mono);font-size:11px;color:var(--accent);font-weight:700;
+  background:var(--accent-soft);border-radius:3px;padding:2px 6px}
+.cv{flex:none;display:none;color:var(--faint)}
+
+/* 진행 표시 */
+.prog{margin:0 0 15px}
+.prog .bar{height:4px;background:var(--line);border-radius:3px;overflow:hidden}
+.prog .bar i{display:block;height:100%;background:var(--accent);border-radius:3px}
+.prog .t{font-family:var(--mono);font-size:10.5px;color:var(--faint);margin-top:7px;
+  letter-spacing:.03em}
+
+/* 부(part) 그룹 */
+.toc{list-style:none;margin:0;padding:0}
+.pt{border-top:1px solid var(--line)}
+.pt:last-of-type{border-bottom:1px solid var(--line)}
+.pt>summary{display:flex;align-items:center;gap:8px;padding:9px 2px;cursor:pointer;
+  list-style:none;font-size:13.5px;font-weight:700;letter-spacing:-.012em;color:var(--fg)}
+.pt>summary::-webkit-details-marker{display:none}
+.pt>summary::marker{content:""}
+.pt>summary:hover{color:var(--accent)}
+.pt .pn{font-family:var(--mono);font-size:10.5px;font-weight:700;color:var(--accent);
+  background:var(--accent-soft);border-radius:3px;padding:2px 5px;flex:none;letter-spacing:.02em}
+.pt .ptt{flex:1;min-width:0;line-height:1.4;word-break:keep-all}
+.pt .pc{font-family:var(--mono);font-size:10px;color:var(--faint);flex:none}
+.pt .pcv{flex:none;color:var(--line2);transition:transform .18s}
+.pt[open]>summary .pcv{transform:rotate(180deg)}
+.pt.cur>summary{color:var(--accent)}
+.pt.cur .pn{background:var(--accent);color:#fff}
+.items{list-style:none;margin:0 0 9px;padding:0;border-left:2px solid var(--line);
+  margin-left:6px}
+.items li{margin:0}
+.items a,.items .soon{display:block;padding:6px 0 6px 12px;line-height:1.5;font-size:13.5px;
+  margin-left:-2px;border-left:2px solid transparent;word-break:keep-all}
+.items a{color:var(--dim)}
+.items a:hover{color:var(--accent);background:var(--accent-soft);text-decoration:none}
+.items a.on{color:var(--accent);font-weight:700;border-left-color:var(--accent);
+  background:var(--accent-soft)}
+.items .soon{color:var(--ghost);cursor:default}
+.items .n{font-family:var(--mono);font-size:11px;color:var(--faint);margin-right:7px}
+.items .soon .n{color:#c5ccd6}
+.items a.on .n{color:var(--accent)}
+.toc-foot{font-family:var(--mono);font-size:10px;color:var(--faint);margin-top:12px;
+  letter-spacing:.03em;line-height:1.7}
+.toc-foot .dash{display:inline-block;width:16px;border-top:1px dashed var(--line2);
+  vertical-align:middle;margin-right:5px}
+
+/* ── index ───────────────────────────────────────── */
+.hero{padding:48px 0 26px}
+.kicker{display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  color:var(--accent);text-transform:uppercase;font-weight:650;
+  background:var(--accent-soft);padding:5px 10px;border-radius:4px;margin-bottom:18px}
+.hero h1{font-size:34px;line-height:1.32;margin:0 0 16px;letter-spacing:-.028em;font-weight:750}
+.hero p{color:var(--dim);font-size:16.5px;margin:0;max-width:42em;line-height:1.75}
+
+/* ── 핵심 요약 ───────────────────────────────────── */
+.sum{border:1px solid var(--line);border-radius:12px;padding:24px 24px 26px;
+  margin:8px 0 42px;background:linear-gradient(180deg,#fbfcfe 0%,#ffffff 55%)}
+.sum-h{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.sum-h .lbl{font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--accent);font-weight:700;flex:none}
+.sum-h .rule{flex:1;height:1px;background:var(--line)}
+.sum-h .wip{font-family:var(--mono);font-size:10px;color:var(--faint);flex:none;
+  border:1px solid var(--line2);border-radius:20px;padding:2px 9px}
+.sum-lead{font-size:19.5px;line-height:1.66;font-weight:700;letter-spacing:-.025em;
+  margin:0 0 10px;max-width:34em;word-break:keep-all}
+.sum-lead b{color:var(--accent);font-weight:700}
+.sum-sub{color:var(--dim);font-size:15.5px;line-height:1.75;margin:0 0 26px;max-width:44em}
+
+.flow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:30px;margin:0 0 24px}
+.step{position:relative;min-width:0;background:#fff;border:1px solid var(--line);
+  border-radius:10px;padding:15px 16px 17px}
+.step::after{content:"→";position:absolute;right:-22px;top:50%;transform:translateY(-50%);
+  font-family:var(--mono);font-size:15px;font-weight:700;color:#b6bfcb;line-height:1}
+.step:last-child::after{content:none}
+.step .sn{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.08em;
+  color:var(--faint);font-weight:700;margin-bottom:9px;text-transform:uppercase}
+.step h3{font-size:16px;margin:0 0 9px;font-weight:750;letter-spacing:-.022em;line-height:1.4;
+  word-break:keep-all}
+.step p{margin:0;font-size:14.5px;line-height:1.66;color:var(--dim)}
+.step .say{display:block;font-family:var(--mono);font-size:12.5px;line-height:1.7;
+  color:var(--fg);background:var(--alt);border:1px solid var(--line);border-radius:7px;
+  padding:9px 11px;margin:0 0 11px;word-break:keep-all}
+.step.mid{background:var(--alt);border-color:var(--line2)}
+.step.mid .gears{list-style:none;margin:0 0 11px;padding:0;
+  border-left:2px solid var(--line2)}
+.step.mid .gears li{font-family:var(--mono);font-size:11.5px;color:var(--dim);
+  padding:3px 0 3px 10px;line-height:1.55;letter-spacing:-.02em;word-break:keep-all}
+.step .out{list-style:none;margin:0 0 11px;padding:0}
+.step .out li{font-size:13.5px;color:var(--fg);padding:3px 0 3px 14px;position:relative;
+  line-height:1.55;word-break:keep-all}
+.step .out li::before{content:"›";position:absolute;left:2px;color:var(--accent);font-weight:700}
+
+.cmp{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:0 0 22px}
+.cmp .c{min-width:0;border:1px solid var(--line);border-radius:10px;padding:14px 16px 15px}
+.cmp .c.cut{border-left:3px solid var(--accent)}
+.cmp .c.keep{border-left:3px solid var(--line2)}
+.cmp h4{margin:0 0 9px;font-size:13.5px;font-weight:750;letter-spacing:-.015em;
+  word-break:keep-all}
+.cmp .c.cut h4{color:var(--accent)}
+.cmp ul{list-style:none;margin:0;padding:0}
+.cmp li{font-size:14px;color:var(--dim);padding:3px 0 3px 13px;position:relative;line-height:1.6;
+  word-break:keep-all}
+.cmp li::before{content:"·";position:absolute;left:3px;color:var(--faint);font-weight:700}
+
+.sum-close{border-top:1px solid var(--line);padding-top:17px;font-size:15.5px;
+  line-height:1.72;color:var(--fg);margin:0;max-width:46em}
+.sum-close strong{font-weight:750}
+.sum-close .th{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--faint);font-weight:700;margin-bottom:8px}
+
+/* ── 글 목록 ─────────────────────────────────────── */
+.list-h{display:flex;align-items:center;gap:12px;margin:0 0 2px}
+.list-h .lbl{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--faint);font-weight:700;flex:none}
+.list-h .rule{flex:1;height:1px;background:var(--line)}
+.list{padding:6px 0 4px}
+.item{display:grid;grid-template-columns:44px minmax(0,1fr);gap:16px;padding:22px 0;
+  border-top:1px solid var(--line);color:inherit}
+.item:hover{text-decoration:none}
+.item:hover .t{color:var(--accent)}
+.no{font-family:var(--mono);font-size:13px;color:var(--faint);font-weight:600;padding-top:3px}
+.t{font-size:19px;font-weight:700;margin:0 0 7px;letter-spacing:-.018em;line-height:1.42;
+  color:var(--fg);transition:color .15s;word-break:keep-all}
+.ex{color:var(--dim);font-size:15.5px;line-height:1.7;margin:0}
+.meta{font-family:var(--mono);font-size:11.5px;color:var(--faint);margin-top:9px}
+.item .part{font-family:var(--mono);font-size:10.5px;color:var(--accent);
+  letter-spacing:.06em;margin-bottom:5px;display:block}
+
+.up{border-top:1px solid var(--line);padding:22px 0 72px}
+.up-h{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--faint);font-weight:700;margin-bottom:12px}
+.up-l{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0;margin:0}
+.up-l li{font-size:14px;color:var(--ghost);border:1px dashed var(--line2);border-radius:8px;
+  padding:6px 12px;line-height:1.5;word-break:keep-all}
+.up-l li .n{font-family:var(--mono);font-size:11px;margin-right:7px;color:#c5ccd6}
+
+/* ── article ─────────────────────────────────────── */
+article{padding:34px 0 40px;max-width:720px}
+.a-kicker{font-family:var(--mono);font-size:11.5px;letter-spacing:.11em;color:var(--accent);
+  text-transform:uppercase;font-weight:650;margin-bottom:14px}
+.a-kicker .sep{color:var(--line2);margin:0 7px}
+article h1{font-size:31px;line-height:1.34;margin:0 0 14px;letter-spacing:-.03em;font-weight:750}
+.a-meta{font-family:var(--mono);font-size:12px;color:var(--faint);
+  padding-bottom:12px;border-bottom:1px solid var(--line);margin-bottom:34px}
+.a-rail{display:flex;align-items:center;gap:10px;margin:0 0 12px}
+.a-rail .bar{flex:1;height:3px;background:var(--line);border-radius:2px;overflow:hidden}
+.a-rail .bar i{display:block;height:100%;background:var(--accent)}
+.a-rail .pos{font-family:var(--mono);font-size:10.5px;color:var(--faint);flex:none;
+  letter-spacing:.04em}
+.body h2{font-size:21px;margin:46px 0 14px;letter-spacing:-.02em;font-weight:750;line-height:1.42;
+  padding-top:4px}
+.body h3{font-size:18px;margin:32px 0 10px;font-weight:700}
+.body p{margin:0 0 21px}
+.body strong{font-weight:750}
+.body em{color:var(--dim);font-style:italic}
+.body ul,.body ol{padding-left:22px;margin:0 0 21px}
+.body li{margin-bottom:7px}
+.body blockquote{margin:26px 0;padding:16px 20px;background:var(--alt);
+  border-left:3px solid var(--accent);border-radius:0 6px 6px 0;color:var(--dim)}
+.body blockquote p{margin:0 0 10px}
+.body blockquote p:last-child{margin:0}
+.body code{font-family:var(--mono);font-size:.87em;background:var(--alt);
+  border:1px solid var(--line);border-radius:4px;padding:1.5px 6px;color:#0f5bb5}
+.body pre{background:var(--alt);border:1px solid var(--line);border-radius:8px;
+  padding:16px 18px;overflow-x:auto;margin:24px 0}
+.body pre code{background:none;border:0;padding:0;font-size:13.5px;line-height:1.7}
+.body hr{border:0;border-top:1px solid var(--line);margin:40px 0}
+.body img{max-width:100%;height:auto;border-radius:6px;margin:24px 0;border:1px solid var(--line)}
+.body table{width:100%;border-collapse:collapse;margin:24px 0;font-size:15.5px;
+  display:block;overflow-x:auto}
+.body th,.body td{border:1px solid var(--line);padding:9px 12px;text-align:left}
+.body th{background:var(--alt);font-weight:700}
+
+/* 이전/다음 */
+.pnav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;
+  border-top:1px solid var(--line);padding:26px 0 0;margin-top:44px}
+.nv{display:block;min-width:0;border:1px solid var(--line);border-radius:10px;
+  padding:13px 15px;color:inherit}
+a.nv:hover{border-color:var(--accent);background:var(--accent-soft);text-decoration:none}
+.nv.next{text-align:right}
+.nv .lbl{display:block;font-family:var(--mono);font-size:10px;color:var(--faint);
+  letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;font-weight:700}
+.nv .nt{font-size:14.5px;font-weight:700;line-height:1.5;letter-spacing:-.015em;color:var(--fg);
+  word-break:keep-all}
+a.nv:hover .nt{color:var(--accent)}
+.nv.off{border-style:dashed}
+.nv.off .nt{color:var(--ghost);font-weight:650}
+.nv.blank{border:0;padding:0}
+.a-back{text-align:center;margin-top:20px;font-family:var(--mono);font-size:11.5px;
+  letter-spacing:.04em}
+
+footer{border-top:1px solid var(--line);margin-top:56px;padding:24px 0 44px;
+  color:var(--faint);font-size:12.5px;font-family:var(--mono)}
+
+/* ── 태블릿/모바일 ───────────────────────────────── */
+@media(max-width:900px){
+  .shell{grid-template-columns:minmax(0,1fr);gap:0}
+  aside{position:static;padding:18px 0 0;max-height:none;overflow:visible;
+    border-bottom:1px solid var(--line);margin-bottom:4px;padding-bottom:18px}
+  /* 모바일에서는 목차 전체를 접는다 (체크박스 토글, JS 없음) */
+  .toc-bar{margin-bottom:0;border:1px solid var(--line);border-radius:9px;
+    padding:11px 13px;background:var(--alt);cursor:pointer;
+    -webkit-tap-highlight-color:transparent}
+  .toc-bar .side-h{flex:1}
+  .cv{display:block;transition:transform .18s}
+  .toc-cb:checked ~ .toc-bar{border-color:var(--accent);background:var(--accent-soft)}
+  .toc-cb:checked ~ .toc-bar .cv{transform:rotate(180deg);color:var(--accent)}
+  .toc-cb:focus-visible ~ .toc-bar{outline:2px solid var(--accent);outline-offset:2px}
+  .toc-panel{display:none;padding-top:14px}
+  .toc-cb:checked ~ .toc-panel{display:block}
+  .items a,.items .soon{padding:9px 0 9px 12px}
+  .pt>summary{padding:12px 2px}
+  article{padding-top:24px}
+}
+@media(max-width:760px){
+  .flow{grid-template-columns:minmax(0,1fr);gap:28px}
+  .step::after{content:"↓";right:auto;left:24px;top:auto;bottom:-21px;transform:none}
+}
+@media(max-width:640px){
+  body{font-size:16.5px}
+  .shell,.solo,.hd{padding:0 18px}
+  .hero{padding:32px 0 22px}
+  .hero h1{font-size:26px}
+  article h1{font-size:25px}
+  .body h2{font-size:19.5px}
+  .t{font-size:17.5px}
+  .item{grid-template-columns:32px minmax(0,1fr);gap:12px}
+  nav.top a{margin-left:13px;font-size:13px}
+  .sum{padding:20px 17px 22px;border-radius:11px;margin-bottom:34px}
+  .sum-lead{font-size:17.5px}
+  .sum-sub{font-size:15px;margin-bottom:22px}
+  .sum-h .wip{display:none}
+  .cmp{grid-template-columns:minmax(0,1fr)}
+  .pnav{grid-template-columns:minmax(0,1fr)}
+  .nv.next{text-align:left}
+  .nv.blank{display:none}
+}
+</style>
+</head>
+<body>
+<header><div class="hd">
+  <a class="brand" href="/">Numpilot</a>
+  <nav class="top"><a href="/">블로그</a><a href="/about/">소개</a></nav>
+</div></header>
+<div class="shell"><aside><input type="checkbox" id="toctoggle" class="toc-cb"><label class="toc-bar" for="toctoggle"><span class="side-h">연재 목차</span><span class="toc-n">30/30</span><svg class="cv" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></label><div class="toc-panel"><div class="prog"><div class="bar"><i style="width:100%"></i></div><div class="t">전체 30편 중 30편 발행</div></div><div class="toc"><details class="pt"><summary><span class="pn">1부</span><span class="ptt">문제</span><span class="pc">5/5</span><svg class="pcv" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><ul class="items"><li><a href="/blog/01-why-one-day/"><span class="n">01</span>해석 한 번 돌리는 데 왜 하루가 걸릴까</a></li><li><a href="/blog/02-a-reckless-idea/"><span class="n">02</span>폰으로 해석한다는 무모한 생각</a></li><li><a href="/blog/03-the-distance/"><span class="n">03</span>질문하는 사람과 계산하는 사람 사이의 거리</a></li><li><a href="/blog/04-where-should-it-run/"><span class="n">04</span>계산은 어디서 일어나야 하는가</a></li><li><a href="/blog/05-what-we-built-first/"><span class="n">05</span>처음 만든 것, 그리고 왜 실패했나</a></li></ul></details><details class="pt"><summary><span class="pn">2부</span><span class="ptt">언어의 문제 — DSL</span><span class="pc">8/8</span><svg class="pcv" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><ul class="items"><li><a href="/blog/06-how-people-speak-physics/"><span class="n">06</span>사람은 물리를 어떻게 말하는가</a></li><li><a href="/blog/07-what-is-omitted/"><span class="n">07</span>\&quot;알루미늄 팬\&quot; 한마디에 생략된 것들</a></li><li><a href="/blog/08-what-is-a-dsl/"><span class="n">08</span>DSL이란 무엇인가 — 좁은 언어의 힘</a></li><li><a href="/blog/09-design-what-to-keep/"><span class="n">09</span>설계 ①: 무엇을 표현하고 무엇을 버릴까</a></li><li><a href="/blog/10-design-ambiguity/"><span class="n">10</span>설계 ②: 애매함을 어떻게 다룰까</a></li><li><a href="/blog/11-units-and-frames/"><span class="n">11</span>설계 ③: 단위와 좌표계라는 함정</a></li><li><a href="/blog/12-translation-layer/"><span class="n">12</span>자연어에서 DSL로 — 번역층의 구조</a></li><li><a href="/blog/13-vibe-coding/"><span class="n">13</span>vibe coding이 바꾼 것, 그리고 바꾸지 못한 것</a></li></ul></details><details class="pt"><summary><span class="pn">3부</span><span class="ptt">계산의 기초</span><span class="pc">7/7</span><svg class="pcv" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><ul class="items"><li><a href="/blog/14-cutting-the-grid/"><span class="n">14</span>격자를 자른다는 것 (FDM)</a></li><li><a href="/blog/15-first-analysis/"><span class="n">15</span>열전달, 첫 번째 해석</a></li><li><a href="/blog/16-boundary-conditions/"><span class="n">16</span>경계조건이 결과를 바꾼다</a></li><li><a href="/blog/17-complex-shapes-fem/"><span class="n">17</span>형상이 복잡해지면 (FEM)</a></li><li><a href="/blog/18-what-convergence-means/"><span class="n">18</span>수렴한다는 것은 무슨 뜻인가</a></li><li><a href="/blog/19-phone-tradeoffs/"><span class="n">19</span>폰의 한계와 타협 — 무엇을 포기했나</a></li><li><a href="/blog/20-verification/"><span class="n">20</span>검증: 답이 맞다는 걸 어떻게 아는가</a></li></ul></details><details class="pt cur" open><summary><span class="pn">4부</span><span class="ptt">AI로 넓히기</span><span class="pc">7/7</span><svg class="pcv" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><ul class="items"><li><a href="/blog/21-why-ai/"><span class="n">21</span>왜 AI인가 — 반복이 만드는 기회</a></li><li><a href="/blog/22-pinn/"><span class="n">22</span>PINN: 물리 법칙을 손실함수에 넣기</a></li><li><a href="/blog/23-why-fourier/"><span class="n">23</span>왜 하필 푸리에인가</a></li><li><a class="on" aria-current="page" href="/blog/24-fno/"><span class="n">24</span>FNO: 답이 아니라 연산자를 배운다</a></li><li><a href="/blog/25-data-as-asset/"><span class="n">25</span>데이터가 자산이 되는 구조</a></li><li><a href="/blog/26-filtering-wrong-answers/"><span class="n">26</span>틀린 답을 걸러내는 설계 — 신뢰의 문제</a></li><li><a href="/blog/27-roadmap/"><span class="n">27</span>단계적 확장 로드맵: 검증된 솔버에서 AI 해석으로</a></li></ul></details><details class="pt"><summary><span class="pn">5부</span><span class="ptt">제품과 앞으로</span><span class="pc">3/3</span><svg class="pcv" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><ul class="items"><li><a href="/blog/28-numpilot-anatomy/"><span class="n">28</span>Numpilot 해부 — Solver Lab / Learn / Models / Projects</a></li><li><a href="/blog/29-education-axis/"><span class="n">29</span>교육이라는 또 하나의 축</a></li><li><a href="/blog/30-the-era/"><span class="n">30</span>개발자가 직접 해석하는 시대</a></li></ul></details></div><div class="toc-foot"><span class="dash"></span>회색은 연재 예정 편</div></div></aside><main><article><div class="a-kicker">손안의 수치해석<span class="sep">/</span>4부 AI로 넓히기</div><h1>FNO: 답이 아니라 연산자를 배운다</h1><div class="a-rail"><span class="pos">24 / 30</span><span class="bar"><i style="width:80%"></i></span></div><div class="a-meta">2026-08-16 · 읽는 데 10분</div><div class="body"><h2>무엇을 배우는가의 차이</h2>
+<p>이 편의 제목에 있는 &ldquo;연산자&rdquo;라는 말부터 풀어야 한다.</p>
+<p>일반적인 기계학습은 <strong>숫자에서 숫자로</strong> 가는 관계를 배운다. 사진을 넣으면 &ldquo;고양이&rdquo;라는 답이 나오고, 조건 몇 개를 넣으면 온도 하나가 나온다.</p>
+<p>그런데 우리 문제는 그런 모양이 아니다. <strong>입력도 분포이고 출력도 분포다.</strong></p>
+<ul>
+<li>입력 — 어디가 뜨겁고 어디가 차가운지, 어떤 재료가 어디 있는지 (공간 전체에 걸친 정보)</li>
+<li>출력 — 각 위치의 온도 (공간 전체에 걸친 정보)</li>
+</ul>
+<p>이렇게 <strong>함수를 받아 함수를 내놓는 관계</strong>를 수학에서 연산자라 부른다. 미분이 연산자의 예다. 함수를 넣으면 다른 함수가 나온다.</p>
+<p><strong>FNO(Fourier Neural Operator)</strong>의 발상은 이 연산자 자체를 학습하는 것이다.</p>
+<h2>왜 이 구분이 중요한가</h2>
+<p>실용적인 차이가 하나 있다. <strong>격자에 묶이지 않는다는 것.</strong></p>
+<p>일반적인 신경망으로 온도 분포를 다루려면, 격자점의 값들을 죽 늘어놓아 입력으로 준다. 100×100 격자면 만 개의 숫자다.</p>
+<p>그러면 모델이 그 격자 크기에 묶인다. 50×50 격자로 학습한 모델에 100×100을 넣을 수 없다. 입력의 개수가 다르니까.</p>
+<p><strong>연산자를 배우면 이 제약이 풀린다.</strong> 배운 것이 &ldquo;격자점 만 개를 다루는 방법&rdquo;이 아니라 &ldquo;분포를 분포로 옮기는 규칙&rdquo;이기 때문이다.</p>
+<p>실용적으로는 이렇게 쓸 수 있다. <strong>성긴 격자로 학습하고, 촘촘한 격자에 적용한다.</strong> 학습 비용은 싸고 사용은 정밀하게. 이게 FNO 계열 방법이 주목받은 이유 중 하나다.</p>
+<h2>어떻게 작동하나</h2>
+<p>23편에서 준비한 아이디어가 여기서 조립된다.</p>
+<p><strong>구조를 단계로 나누면 이렇다.</strong></p>
+<p><strong>① 푸리에 세계로 옮긴다.</strong> 입력 분포를 파동 성분으로 쪼갠다.</p>
+<p><strong>② 각 성분에 곱한다.</strong> 이 곱하는 값을 <strong>학습으로 정한다.</strong> 이게 핵심이다. 이상적인 조건에서는 수식으로 유도되지만, 현실적인 조건에서는 유도할 수 없으므로 데이터에서 찾는다.</p>
+<p><strong>③ 급한 성분은 버린다.</strong> 아주 빠른 파동 성분은 잘라낸다. 계산량이 줄고, 잡음도 함께 걸러진다.</p>
+<p><strong>④ 원래 세계로 돌아온다.</strong> 성분들을 다시 합쳐 분포를 만든다.</p>
+<p><strong>⑤ 이걸 몇 겹 쌓는다.</strong> 한 번으로는 표현력이 부족하므로 여러 층을 통과시킨다.</p>
+<p>23편에서 말한 &ldquo;얽힘이 풀린 좋은 좌표계&rdquo;의 이점이 여기서 나온다. 푸리에 세계에서는 성분들이 서로 독립적이므로, <strong>학습해야 할 관계가 훨씬 단순해진다.</strong> 원래 세계에서 모든 점이 모든 점과 얽힌 관계를 배우는 것보다 압도적으로 쉽다.</p>
+<h2>얼마나 빨라지나</h2>
+<p>이 방법의 매력은 속도다.</p>
+<p>전통적인 계산은 <strong>반복</strong>한다. 격자를 훑고, 갱신하고, 다시 훑는다. 수천 번.</p>
+<p>FNO는 <strong>한 번 통과한다.</strong> 입력을 넣으면 몇 개의 층을 지나 답이 나온다. 반복이 없다.</p>
+<p>그래서 조건이 정해진 뒤 답을 얻는 시간이 크게 줄어든다. 문헌에 보고된 가속 배수는 문제와 구현에 따라 크게 다르지만, 반복이 사라진다는 구조적 차이는 분명하다.</p>
+<p><strong>우리 목적에서 이 차이가 뜻하는 것</strong>은 이렇다. 15편에서 &ldquo;몇 초&rdquo;라고 했던 응답 시간이 더 짧아지고, 무엇보다 <strong>더 큰 문제를 폰에서 다룰 수 있게 된다.</strong> 3차원이나 과도 해석처럼 19편에서 포기한 것들 중 일부가 가능해질 수 있다.</p>
+<h2>대가: 검증 체계가 흔들린다</h2>
+<p>여기가 이 편에서 가장 중요한 부분이다.</p>
+<p>21편의 표에서 &ldquo;답 예측&rdquo;의 위험이 크다고 했다. 왜 그런지 구체적으로 보자.</p>
+<p><strong>20편에서 만든 검증들이 그대로 적용되지 않는다.</strong></p>
+<p><em>격자 수렴 검사</em> — 격자를 촘촘히 해서 답이 안정되는지 보는 검사였다. FNO는 격자에 묶이지 않으므로, 격자를 바꿔도 답이 &ldquo;수렴&rdquo;하는 것이 아니다. 이 검사의 의미가 달라진다.</p>
+<p><em>반복 수렴 검사</em> — 반복이 없으므로 해당 사항이 없다.</p>
+<p><em>알려진 해 대조</em> — 이건 여전히 유효하다. 단순 문제의 정확한 답과 비교할 수 있다. 다만 <strong>학습 데이터에 그 문제가 들어 있었다면</strong> 검증이 아니다. 외운 것을 확인하는 것에 불과하다.</p>
+<p><strong>남는 것은 물리적 일관성 검사다.</strong> 에너지가 보존되는가, 최대값이 제자리에 있는가, 조건을 바꿨을 때 방향이 맞는가.</p>
+<p>이건 예측된 답에도 적용할 수 있다. 그래서 FNO를 쓸 때 <strong>이 검사들이 유일한 방어선이 된다.</strong></p>
+<h2>더 근본적인 문제: 조용히 틀린다</h2>
+<p>10편에서 계속 경계한 &ldquo;조용히 틀리는 실패&rdquo;가 여기서 최악의 형태로 나타난다.</p>
+<p>전통적인 계산이 실패하면 대개 티가 난다. 발산하거나, 진동하거나, 수렴하지 않는다.</p>
+<p><strong>FNO는 항상 답을 낸다.</strong> 학습 범위 밖의 조건이 들어와도, 물리적으로 불가능한 입력이 들어와도, 무언가 그럴듯한 분포를 내놓는다. 신경망은 &ldquo;모르겠다&rdquo;고 말하지 않는다.</p>
+<p>그리고 그 답이 얼마나 틀렸는지 알 방법이 없다. 정답을 모르니까.</p>
+<p><strong>이것이 우리가 FNO를 조심스럽게 도입하는 이유다.</strong></p>
+<h2>그래서 어떻게 쓰나</h2>
+<p>우리 설계에서 FNO의 위치를 정리하면 이렇다.</p>
+<p><strong>① 전통 솔버를 대체하지 않는다.</strong> 병행한다.</p>
+<p><strong>② 탐색 단계에 쓴다.</strong> 사용자가 조건을 바꿔가며 열 번 시도하는 동안, 즉시 답을 준다. 이 단계에서 필요한 것은 정확도가 아니라 방향이다.</p>
+<p><strong>③ 결정 단계에서는 전통 솔버로 확인한다.</strong> 18편에서 만든 구조와 같다. 사용자가 &ldquo;이 조건으로 가자&rdquo;고 판단한 시점에 검증된 방법으로 다시 계산한다.</p>
+<p><strong>④ 두 답이 다르면 알린다.</strong> FNO 예측과 전통 계산이 크게 다르면, 그건 그 조건이 학습 범위를 벗어났다는 신호다.</p>
+<p><strong>⑤ 물리 검사를 상시 적용한다.</strong> 예측된 답이 에너지 보존을 위반하면 표시하거나 폐기한다.</p>
+<p>이 구조에서 FNO는 <strong>빠른 초안</strong>이고 전통 솔버는 <strong>확인</strong>이다. 그리고 ④가 자동 감사 장치로 작동한다. 사용자가 결정할 때마다 FNO의 성능이 자동으로 점검되는 셈이다.</p>
+<h2>정직한 현재 위치</h2>
+<p>이 편을 마무리하며 상태를 분명히 해두자.</p>
+<p><strong>FNO는 우리 로드맵의 후반부다.</strong> 지금 앱에 들어 있는 것은 전통 계산이고, FNO는 미리보기 수준의 실험이다.</p>
+<p>이유는 데이터다. FNO를 학습시키려면 (조건, 답) 짝이 대량으로 필요하다. 21편에서 &ldquo;무한히 만들 수 있다&rdquo;고 했지만, 그건 계산 자원이 있으면 그렇다는 뜻이다. 수만 건의 해석을 돌리는 것은 서버에서 오래 걸리는 작업이다.</p>
+<p>그리고 어떤 조건 범위를 학습해야 하는지도 실사용 데이터가 쌓여야 안다.</p>
+<p><strong>그러니 순서는 이렇다.</strong> 전통 계산으로 서비스를 만들고 → 사용 데이터에서 실제 조건 분포를 파악하고 → 그 범위에서 학습 데이터를 생성하고 → FNO를 학습해 탐색 단계에 투입한다.</p>
+<p>이 순서가 25편의 주제로 이어진다. 사용이 데이터를 만들고, 데이터가 성능을 만드는 구조.</p>
+<hr />
+<p><strong>다음 편 예고 —</strong> <em>데이터가 자산이 되는 구조.</em> 사용이 쌓이면서 도구가 좋아지는 순환을 어떻게 만드는지, 그리고 그 순환의 함정은 무엇인지.</p></div><div class="pnav"><a class="nv prev" href="/blog/23-why-fourier/"><span class="lbl">이전 편</span><span class="nt">23. 왜 하필 푸리에인가</span></a><a class="nv next" href="/blog/25-data-as-asset/"><span class="lbl">다음 편</span><span class="nt">25. 데이터가 자산이 되는 구조</span></a></div><div class="a-back"><a href="/">← 연재 목차 전체 보기</a></div></article></main></div><footer><div class="solo">© Numpilot</div></footer>
+</body></html>

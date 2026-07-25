@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>폰으로 해석한다는 무모한 생각 — Numpilot</title>
-<meta name="description" content="계산기의 계보 공학 계산이 어디서 이루어졌는지를 따라가 보면, 기계는 계속 작아졌다. 처음에는 건물만 한 컴퓨터였다. 계산을 하려면 그 방에 찾아가야 했다. 다음은 워크스테이션이었다. 연구실 한구석…">
-<meta property="og:title" content="폰으로 해석한다는 무모한 생각 — Numpilot">
-<meta property="og:description" content="계산기의 계보 공학 계산이 어디서 이루어졌는지를 따라가 보면, 기계는 계속 작아졌다. 처음에는 건물만 한 컴퓨터였다. 계산을 하려면 그 방에 찾아가야 했다. 다음은 워크스테이션이었다. 연구실 한구석…">
+<title>설계 ①: 무엇을 표현하고 무엇을 버릴까 — Numpilot</title>
+<meta name="description" content="기준을 먼저 정해야 했다 무엇을 뺄지 정하려면 기준이 필요하다. 우리가 세운 기준은 하나였다. "기본값을 합리적으로 정할 수 있는가." 이 기준이 나온 배경은 7편에서 세어본 그 숫자다. 사용자가 …">
+<meta property="og:title" content="설계 ①: 무엇을 표현하고 무엇을 버릴까 — Numpilot">
+<meta property="og:description" content="기준을 먼저 정해야 했다 무엇을 뺄지 정하려면 기준이 필요하다. 우리가 세운 기준은 하나였다. "기본값을 합리적으로 정할 수 있는가." 이 기준이 나온 배경은 7편에서 세어본 그 숫자다. 사용자가 …">
 <meta property="og:type" content="article">
 <meta name="theme-color" content="#ffffff">
 <link rel="icon" href="/assets/logo.png">
@@ -290,49 +290,88 @@ footer{border-top:1px solid var(--line);margin-top:56px;padding:24px 0 44px;
   <a class="brand" href="/">Numpilot</a>
   <nav class="top"><a href="/">블로그</a><a href="/about/">소개</a></nav>
 </div></header>
-<div class="shell"><aside><input type="checkbox" id="toctoggle" class="toc-cb"><label class="toc-bar" for="toctoggle"><span class="side-h">연재 목차</span><span class="toc-n">30/30</span><svg class="cv" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></label><div class="toc-panel"><div class="prog"><div class="bar"><i style="width:100%"></i></div><div class="t">전체 30편 중 30편 발행</div></div><div class="toc"><details class="pt cur" open><summary><span class="pn">1부</span><span class="ptt">문제</span><span class="pc">5/5</span><svg class="pcv" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><ul class="items"><li><a href="/blog/01-why-one-day/"><span class="n">01</span>해석 한 번 돌리는 데 왜 하루가 걸릴까</a></li><li><a class="on" aria-current="page" href="/blog/02-a-reckless-idea/"><span class="n">02</span>폰으로 해석한다는 무모한 생각</a></li><li><a href="/blog/03-the-distance/"><span class="n">03</span>질문하는 사람과 계산하는 사람 사이의 거리</a></li><li><a href="/blog/04-where-should-it-run/"><span class="n">04</span>계산은 어디서 일어나야 하는가</a></li><li><a href="/blog/05-what-we-built-first/"><span class="n">05</span>처음 만든 것, 그리고 왜 실패했나</a></li></ul></details><details class="pt"><summary><span class="pn">2부</span><span class="ptt">언어의 문제 — DSL</span><span class="pc">8/8</span><svg class="pcv" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><ul class="items"><li><a href="/blog/06-how-people-speak-physics/"><span class="n">06</span>사람은 물리를 어떻게 말하는가</a></li><li><a href="/blog/07-what-is-omitted/"><span class="n">07</span>\&quot;알루미늄 팬\&quot; 한마디에 생략된 것들</a></li><li><a href="/blog/08-what-is-a-dsl/"><span class="n">08</span>DSL이란 무엇인가 — 좁은 언어의 힘</a></li><li><a href="/blog/09-design-what-to-keep/"><span class="n">09</span>설계 ①: 무엇을 표현하고 무엇을 버릴까</a></li><li><a href="/blog/10-design-ambiguity/"><span class="n">10</span>설계 ②: 애매함을 어떻게 다룰까</a></li><li><a href="/blog/11-units-and-frames/"><span class="n">11</span>설계 ③: 단위와 좌표계라는 함정</a></li><li><a href="/blog/12-translation-layer/"><span class="n">12</span>자연어에서 DSL로 — 번역층의 구조</a></li><li><a href="/blog/13-vibe-coding/"><span class="n">13</span>vibe coding이 바꾼 것, 그리고 바꾸지 못한 것</a></li></ul></details><details class="pt"><summary><span class="pn">3부</span><span class="ptt">계산의 기초</span><span class="pc">7/7</span><svg class="pcv" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><ul class="items"><li><a href="/blog/14-cutting-the-grid/"><span class="n">14</span>격자를 자른다는 것 (FDM)</a></li><li><a href="/blog/15-first-analysis/"><span class="n">15</span>열전달, 첫 번째 해석</a></li><li><a href="/blog/16-boundary-conditions/"><span class="n">16</span>경계조건이 결과를 바꾼다</a></li><li><a href="/blog/17-complex-shapes-fem/"><span class="n">17</span>형상이 복잡해지면 (FEM)</a></li><li><a href="/blog/18-what-convergence-means/"><span class="n">18</span>수렴한다는 것은 무슨 뜻인가</a></li><li><a href="/blog/19-phone-tradeoffs/"><span class="n">19</span>폰의 한계와 타협 — 무엇을 포기했나</a></li><li><a href="/blog/20-verification/"><span class="n">20</span>검증: 답이 맞다는 걸 어떻게 아는가</a></li></ul></details><details class="pt"><summary><span class="pn">4부</span><span class="ptt">AI로 넓히기</span><span class="pc">7/7</span><svg class="pcv" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><ul class="items"><li><a href="/blog/21-why-ai/"><span class="n">21</span>왜 AI인가 — 반복이 만드는 기회</a></li><li><a href="/blog/22-pinn/"><span class="n">22</span>PINN: 물리 법칙을 손실함수에 넣기</a></li><li><a href="/blog/23-why-fourier/"><span class="n">23</span>왜 하필 푸리에인가</a></li><li><a href="/blog/24-fno/"><span class="n">24</span>FNO: 답이 아니라 연산자를 배운다</a></li><li><a href="/blog/25-data-as-asset/"><span class="n">25</span>데이터가 자산이 되는 구조</a></li><li><a href="/blog/26-filtering-wrong-answers/"><span class="n">26</span>틀린 답을 걸러내는 설계 — 신뢰의 문제</a></li><li><a href="/blog/27-roadmap/"><span class="n">27</span>단계적 확장 로드맵: 검증된 솔버에서 AI 해석으로</a></li></ul></details><details class="pt"><summary><span class="pn">5부</span><span class="ptt">제품과 앞으로</span><span class="pc">3/3</span><svg class="pcv" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><ul class="items"><li><a href="/blog/28-numpilot-anatomy/"><span class="n">28</span>Numpilot 해부 — Solver Lab / Learn / Models / Projects</a></li><li><a href="/blog/29-education-axis/"><span class="n">29</span>교육이라는 또 하나의 축</a></li><li><a href="/blog/30-the-era/"><span class="n">30</span>개발자가 직접 해석하는 시대</a></li></ul></details></div><div class="toc-foot"><span class="dash"></span>회색은 연재 예정 편</div></div></aside><main><article><div class="a-kicker">손안의 수치해석<span class="sep">/</span>1부 문제</div><h1>폰으로 해석한다는 무모한 생각</h1><div class="a-rail"><span class="pos">02 / 30</span><span class="bar"><i style="width:7%"></i></span></div><div class="a-meta">2026-07-25 · 읽는 데 9분</div><div class="body"><h2>계산기의 계보</h2>
-<p>공학 계산이 어디서 이루어졌는지를 따라가 보면, 기계는 계속 작아졌다.</p>
-<p>처음에는 건물만 한 컴퓨터였다. 계산을 하려면 그 방에 찾아가야 했다. 다음은 워크스테이션이었다. 연구실 한구석에 놓인 비싼 기계 앞에 순서대로 줄을 섰다. 그다음이 개인용 컴퓨터였고, 지금은 노트북에서 웬만한 해석이 돌아간다.</p>
-<p>방 → 연구실 → 책상 → 무릎 위.</p>
-<p>그러면 다음은 어디인가. 주머니다.</p>
-<p>이 흐름만 놓고 보면 휴대폰에서 해석을 돌리자는 발상이 그렇게 이상하지 않다. 그런데 실제로 그렇게 하는 사람은 거의 없다. 이유가 있다.</p>
-<h2>폰은 해석에 최악의 기계다</h2>
-<p>냉정하게 보면 휴대폰은 수치해석에 어울리지 않는다. 이유를 하나씩 세어보면 오히려 하지 말아야 할 근거가 더 많다.</p>
-<p><strong>메모리가 작다.</strong> 해석은 격자의 모든 지점에 대한 값을 동시에 들고 있어야 한다. 100만 개 지점이면 100만 개의 숫자를 메모리에 올려두고, 계산 과정에서 그 두세 배를 더 쓴다. 데스크톱에서는 신경 쓸 일이 아니지만 휴대폰에서는 앱이 강제 종료되는 이유가 된다.</p>
-<p><strong>전력에 제약이 있다.</strong> 노트북은 전원에 꽂아두고 몇 시간이든 계산을 돌릴 수 있다. 휴대폰은 몇 분만 전력을 몰아 써도 뜨거워지고, 뜨거워지면 운영체제가 성능을 스스로 낮춘다. 계산을 오래 돌릴수록 느려지는 기계인 셈이다.</p>
-<p><strong>화면이 작다.</strong> 해석 결과는 대개 그림으로 본다. 온도 분포, 응력 분포, 유동장. 27인치 모니터에서 보던 것을 6인치에 담으면 정보가 사라진다.</p>
-<p><strong>입력이 불편하다.</strong> 좌표를 찍고, 재료를 고르고, 경계조건을 지정하는 일은 마우스와 키보드에 최적화된 작업이다. 손가락으로 하기에 좋은 일이 아니다.</p>
-<p>이 넷 중 앞의 둘은 기술이 해결해 줄 여지가 있다. 칩은 계속 빨라지고 있고, 문제 크기를 줄이면 메모리도 감당할 수 있다.</p>
-<p>문제는 뒤의 둘이다. <strong>화면과 입력은 기계의 성능이 아니라 사람과 기계 사이의 문제</strong>라서, 칩이 빨라져도 그대로 남는다.</p>
-<h2>그런데 왜 굳이</h2>
-<p>그럼에도 폰을 고집한 이유는 성능 때문이 아니었다. <strong>거리</strong> 때문이었다.</p>
-<p>앞 편에서 이야기한 구조를 다시 떠올려보자. 질문을 던지는 사람과 계산을 하는 사람이 분리되어 있고, 그 사이의 왕복에 며칠이 걸린다. 그래서 사소한 궁금증은 질문조차 되지 못한다.</p>
-<p>이 거리를 만드는 것은 계산 속도가 아니다. <strong>접근성</strong>이다.</p>
-<p>해석을 하려면 전용 소프트웨어가 깔린 특정 컴퓨터 앞에 앉아야 하고, 그 소프트웨어를 다룰 줄 알아야 하고, 라이선스가 있어야 한다. 이 세 조건이 모두 갖춰지는 순간은 하루에 몇 번 오지 않는다. 대부분의 궁금증은 그 순간이 오기 전에 잊힌다.</p>
-<p>반면 휴대폰은 언제나 손에 있다. 회의 중에도, 현장에서도, 지하철에서도.</p>
-<p><strong>&ldquo;지금 이 자리에서 확인할 수 있는가.&rdquo;</strong> 우리가 붙잡은 질문은 이것 하나였다.</p>
-<h2>크기를 바꾸면 종류가 바뀐다</h2>
-<p>여기서 중요한 전환이 하나 있다. 기계가 작아지면 같은 일을 작게 하는 게 아니라, <strong>다른 일을 하게 된다.</strong></p>
-<p>카메라가 그랬다. 필름 카메라 시절 사진은 특별한 날의 기록이었다. 필름값과 현상비가 들었고, 한 컷을 신중하게 찍었다. 휴대폰에 카메라가 들어오면서 사진은 다른 것이 되었다. 주차한 자리를 찍고, 영수증을 찍고, 냉장고 안을 찍는다. <strong>기록이 아니라 메모가 되었다.</strong></p>
-<p>해석도 같은 변화를 겪을 수 있다고 봤다.</p>
-<p>지금의 해석은 필름 사진에 가깝다. 비싸고, 신중하게 준비하고, 한 번에 제대로 뽑아야 한다. 그래서 <strong>확신이 있을 때만</strong> 돌린다.</p>
-<p>우리가 원한 것은 메모 같은 해석이다. 정밀하지 않아도 좋으니 지금 당장 대략의 답을 주는 것. &ldquo;이 방향이 맞나?&rdquo;를 30초 만에 확인하고, 아니면 버리는 것.</p>
-<p><strong>정밀한 답 하나보다, 빠른 답 열 개가 설계를 더 멀리 데려간다.</strong></p>
-<p>그러니 폰에서 돌리겠다는 결정은 성능 경쟁이 아니었다. <strong>다른 종류의 해석을 만들겠다는 선언</strong>에 가까웠다.</p>
-<h2>그래서 진짜 문제가 드러났다</h2>
-<p>목표를 이렇게 잡고 나니, 앞에서 세었던 네 가지 약점의 무게가 달라졌다.</p>
-<p>메모리와 전력은 문제를 작게 잡으면 된다. 처음부터 2차원, 단순 형상, 제한된 물리 현상만 다루기로 하면 감당할 수 있다. 정밀함을 포기하기로 했으니 이건 타협 가능한 손실이다.</p>
-<p>화면도 생각보다 큰 문제가 아니었다. 30초 만에 방향만 확인하는 용도라면 필요한 것은 정교한 3차원 시각화가 아니라 <strong>&ldquo;뜨거운가 아닌가&rdquo;</strong> 수준의 판단이다. 그건 작은 화면으로도 충분하다.</p>
-<p>남은 것은 <strong>입력</strong>이었다. 그리고 이게 진짜 벽이었다.</p>
-<p>해석 조건을 지정하는 일은 항목이 많다. 형상, 치수, 재료, 물성값, 경계조건, 초기조건, 시간 범위, 격자 크기. 데스크톱 프로그램은 이걸 수십 개의 입력창과 드롭다운으로 받는다. 그 화면을 휴대폰에 그대로 옮기면 아무도 쓰지 않을 것이 분명했다.</p>
-<p>버튼을 줄이고 화면을 다시 그리는 정도로 해결될 일이 아니었다. <strong>입력 방식 자체를 바꿔야 했다.</strong></p>
-<p>그런데 사람이 물리 문제를 설명하는 가장 자연스러운 방법은 이미 존재한다. 앞 편 마지막에 적었던 그것이다.</p>
-<blockquote>
-<p>&ldquo;알루미늄 팬인데 손잡이는 플라스틱이고, 바닥에서 200도로 가열될 때 손잡이 끝이 몇 도까지 오르는지&rdquo;</p>
-</blockquote>
-<p>사람은 이렇게 말한다. 입력창을 채우는 게 아니라, 문장으로 설명한다.</p>
-<p>그렇다면 이 문장을 그대로 받으면 되지 않을까. 화면에 입력창 대신 텍스트 상자 하나만 두고.</p>
-<p>말은 쉽다. 저 한 문장 안에 얼마나 많은 것이 생략되어 있는지 알기 전까지는.</p>
+<div class="shell"><aside><input type="checkbox" id="toctoggle" class="toc-cb"><label class="toc-bar" for="toctoggle"><span class="side-h">연재 목차</span><span class="toc-n">30/30</span><svg class="cv" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></label><div class="toc-panel"><div class="prog"><div class="bar"><i style="width:100%"></i></div><div class="t">전체 30편 중 30편 발행</div></div><div class="toc"><details class="pt"><summary><span class="pn">1부</span><span class="ptt">문제</span><span class="pc">5/5</span><svg class="pcv" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><ul class="items"><li><a href="/blog/01-why-one-day/"><span class="n">01</span>해석 한 번 돌리는 데 왜 하루가 걸릴까</a></li><li><a href="/blog/02-a-reckless-idea/"><span class="n">02</span>폰으로 해석한다는 무모한 생각</a></li><li><a href="/blog/03-the-distance/"><span class="n">03</span>질문하는 사람과 계산하는 사람 사이의 거리</a></li><li><a href="/blog/04-where-should-it-run/"><span class="n">04</span>계산은 어디서 일어나야 하는가</a></li><li><a href="/blog/05-what-we-built-first/"><span class="n">05</span>처음 만든 것, 그리고 왜 실패했나</a></li></ul></details><details class="pt cur" open><summary><span class="pn">2부</span><span class="ptt">언어의 문제 — DSL</span><span class="pc">8/8</span><svg class="pcv" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><ul class="items"><li><a href="/blog/06-how-people-speak-physics/"><span class="n">06</span>사람은 물리를 어떻게 말하는가</a></li><li><a href="/blog/07-what-is-omitted/"><span class="n">07</span>\&quot;알루미늄 팬\&quot; 한마디에 생략된 것들</a></li><li><a href="/blog/08-what-is-a-dsl/"><span class="n">08</span>DSL이란 무엇인가 — 좁은 언어의 힘</a></li><li><a class="on" aria-current="page" href="/blog/09-design-what-to-keep/"><span class="n">09</span>설계 ①: 무엇을 표현하고 무엇을 버릴까</a></li><li><a href="/blog/10-design-ambiguity/"><span class="n">10</span>설계 ②: 애매함을 어떻게 다룰까</a></li><li><a href="/blog/11-units-and-frames/"><span class="n">11</span>설계 ③: 단위와 좌표계라는 함정</a></li><li><a href="/blog/12-translation-layer/"><span class="n">12</span>자연어에서 DSL로 — 번역층의 구조</a></li><li><a href="/blog/13-vibe-coding/"><span class="n">13</span>vibe coding이 바꾼 것, 그리고 바꾸지 못한 것</a></li></ul></details><details class="pt"><summary><span class="pn">3부</span><span class="ptt">계산의 기초</span><span class="pc">7/7</span><svg class="pcv" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><ul class="items"><li><a href="/blog/14-cutting-the-grid/"><span class="n">14</span>격자를 자른다는 것 (FDM)</a></li><li><a href="/blog/15-first-analysis/"><span class="n">15</span>열전달, 첫 번째 해석</a></li><li><a href="/blog/16-boundary-conditions/"><span class="n">16</span>경계조건이 결과를 바꾼다</a></li><li><a href="/blog/17-complex-shapes-fem/"><span class="n">17</span>형상이 복잡해지면 (FEM)</a></li><li><a href="/blog/18-what-convergence-means/"><span class="n">18</span>수렴한다는 것은 무슨 뜻인가</a></li><li><a href="/blog/19-phone-tradeoffs/"><span class="n">19</span>폰의 한계와 타협 — 무엇을 포기했나</a></li><li><a href="/blog/20-verification/"><span class="n">20</span>검증: 답이 맞다는 걸 어떻게 아는가</a></li></ul></details><details class="pt"><summary><span class="pn">4부</span><span class="ptt">AI로 넓히기</span><span class="pc">7/7</span><svg class="pcv" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><ul class="items"><li><a href="/blog/21-why-ai/"><span class="n">21</span>왜 AI인가 — 반복이 만드는 기회</a></li><li><a href="/blog/22-pinn/"><span class="n">22</span>PINN: 물리 법칙을 손실함수에 넣기</a></li><li><a href="/blog/23-why-fourier/"><span class="n">23</span>왜 하필 푸리에인가</a></li><li><a href="/blog/24-fno/"><span class="n">24</span>FNO: 답이 아니라 연산자를 배운다</a></li><li><a href="/blog/25-data-as-asset/"><span class="n">25</span>데이터가 자산이 되는 구조</a></li><li><a href="/blog/26-filtering-wrong-answers/"><span class="n">26</span>틀린 답을 걸러내는 설계 — 신뢰의 문제</a></li><li><a href="/blog/27-roadmap/"><span class="n">27</span>단계적 확장 로드맵: 검증된 솔버에서 AI 해석으로</a></li></ul></details><details class="pt"><summary><span class="pn">5부</span><span class="ptt">제품과 앞으로</span><span class="pc">3/3</span><svg class="pcv" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><ul class="items"><li><a href="/blog/28-numpilot-anatomy/"><span class="n">28</span>Numpilot 해부 — Solver Lab / Learn / Models / Projects</a></li><li><a href="/blog/29-education-axis/"><span class="n">29</span>교육이라는 또 하나의 축</a></li><li><a href="/blog/30-the-era/"><span class="n">30</span>개발자가 직접 해석하는 시대</a></li></ul></details></div><div class="toc-foot"><span class="dash"></span>회색은 연재 예정 편</div></div></aside><main><article><div class="a-kicker">손안의 수치해석<span class="sep">/</span>2부 언어의 문제 — DSL</div><h1>설계 ①: 무엇을 표현하고 무엇을 버릴까</h1><div class="a-rail"><span class="pos">09 / 30</span><span class="bar"><i style="width:30%"></i></span></div><div class="a-meta">2026-08-01 · 읽는 데 10분</div><div class="body"><h2>기준을 먼저 정해야 했다</h2>
+<p>무엇을 뺄지 정하려면 기준이 필요하다. 우리가 세운 기준은 하나였다.</p>
+<p><strong>&ldquo;기본값을 합리적으로 정할 수 있는가.&rdquo;</strong></p>
+<p>이 기준이 나온 배경은 7편에서 세어본 그 숫자다. 사용자가 주는 것은 네댓 개이고 시스템이 정해야 하는 것이 스무 개다. 그러니 <strong>기본값을 정할 수 없는 항목은 애초에 다루지 말아야 한다.</strong> 다루면 사용자에게 물어야 하고, 물으면 마찰이 생기고, 마찰이 생기면 아무도 쓰지 않는다.</p>
+<p>이 기준으로 후보들을 걸러 나갔다.</p>
+<h2>남긴 것</h2>
+<h3>형상 — 정해진 몇 가지만</h3>
+<p>임의의 형상을 받지 않는다. CAD 파일도 받지 않는다. 대신 <strong>매개변수로 표현되는 기본 도형</strong>만 허용한다. 사각형, 원, 원통, L자 단면, 그리고 이들의 단순한 조합.</p>
+<p>이유는 두 가지다.</p>
+<p>첫째, <strong>격자를 자동으로 만들 수 있다.</strong> 임의 형상에서 좋은 격자를 만드는 일은 그 자체로 어려운 문제이고, 실패하면 결과가 조용히 틀린다. 정해진 도형이라면 격자 생성 규칙을 미리 정해둘 수 있다.</p>
+<p>둘째, <strong>치수의 기본값을 정할 수 있다.</strong> &ldquo;사각형 판&rdquo;이라고만 하면 대표적인 크기를 넣을 수 있다. &ldquo;임의의 형상&rdquo;에는 기본값이라는 게 없다.</p>
+<p>이 결정으로 무엇을 잃었나. 실제 제품의 정확한 형상은 다룰 수 없다. 곡면이 섞인 실물, 구멍이 여러 개 뚫린 판, 조립체 전체. 전부 못 한다.</p>
+<p><strong>그런데 우리 목적에는 크지 않은 손실이었다.</strong> 우리가 만들려는 것은 &ldquo;방향 확인용&rdquo;이다. 손잡이가 뜨거워질지 아닐지를 보려면, 손잡이를 실물 그대로 모델링할 필요가 없다. 적절한 단면을 가진 막대로 근사해도 답의 방향은 같다.</p>
+<h3>물리 — 처음에는 열전달만</h3>
+<p>전자기, 유동, 진동, 구조를 한꺼번에 다루려 하지 않았다. <strong>열전달 하나로 시작했다.</strong></p>
+<p>이유는 열이 <strong>가장 직관적이면서 기본값이 명확한 영역</strong>이기 때문이다. 주변 온도는 실온, 대류 조건은 자연 대류, 초기 온도는 주변과 같음. 이런 기본값이 상식으로 정해진다.</p>
+<p>반면 예를 들어 유동은 그렇지 않다. 입구 유속을 얼마로 놓아야 &ldquo;합리적&rdquo;인가. 정답이 없다. 문제마다 다르다. 그래서 사용자에게 물어야 하고, 물으면 마찰이다.</p>
+<h3>경계조건 — 세 종류만</h3>
+<p>수학적으로 경계조건에는 여러 종류가 있지만, 우리는 세 가지만 허용했다.</p>
+<ul>
+<li><strong>고정 온도</strong> — 이 면은 200도로 유지된다</li>
+<li><strong>열流 유입</strong> — 이 면으로 열이 들어온다</li>
+<li><strong>주변과 열교환</strong> — 이 면은 공기와 접촉해 식는다</li>
+</ul>
+<p>그리고 여기에 <strong>암묵 규칙</strong>을 하나 붙였다. <em>아무 조건도 지정되지 않은 면은 주변 공기와 열교환한다고 본다.</em></p>
+<p>이 규칙 하나가 앞 편에서 본 문제를 크게 줄였다. 사용자가 &ldquo;바닥에서 200도&rdquo;만 말하고 나머지 면을 언급하지 않아도 계산이 성립한다. 사람이 상식으로 채우는 그 값을, 시스템이 규칙으로 채운다.</p>
+<h3>재료 — 목록 + 직접 입력</h3>
+<p>흔한 재료는 목록으로 두고 물성값을 미리 넣어뒀다. 알루미늄, 강철, 스테인리스, 구리, 유리, 몇 가지 플라스틱.</p>
+<p>목록에 없으면 <strong>물성값을 직접 넣을 수 있게</strong> 열어뒀다. 이건 좁힘의 예외인데, 이유가 있다. 재료는 목록으로 다 담을 수 없고, 담지 못한 재료를 쓰는 사용자에게 도구가 무용지물이 되기 때문이다.</p>
+<p>대신 직접 입력을 <strong>드물게 쓰이는 길</strong>로 만들었다. 기본 경로는 목록이고, 필요한 사람만 값을 넣는다.</p>
+<h2>버린 것</h2>
+<p>빼기로 한 결정들이 오히려 이 설계의 성격을 규정한다.</p>
+<table>
+<thead>
+<tr>
+<th>뺀 것</th>
+<th>이유</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>임의 형상 / CAD 가져오기</td>
+<td>격자 자동 생성이 불안정하고 기본값이 없다</td>
+</tr>
+<tr>
+<td>3차원 (초기)</td>
+<td>계산량이 폭발하고, 방향 확인에는 2차원이 대개 충분하다</td>
+</tr>
+<tr>
+<td>재료 물성의 온도 의존성</td>
+<td>데이터가 필요하고 기본값이 없다</td>
+</tr>
+<tr>
+<td>상변화 (녹음, 끓음)</td>
+<td>조건 설정이 복잡하고 결과 해석이 어렵다</td>
+</tr>
+<tr>
+<td>사용자 정의 수식</td>
+<td>무엇이 들어올지 알 수 없어 검사가 불가능하다</td>
+</tr>
+<tr>
+<td>격자·수렴 설정 노출</td>
+<td>사용자가 정할 일이 아니다. 시스템이 정한다</td>
+</tr>
+</tbody>
+</table>
+<p>마지막 줄이 특히 중요하다. <strong>기존 도구에서 가장 어려운 부분을 아예 없애 버렸다.</strong></p>
+<p>물론 이 결정에는 대가가 있다. 시스템이 정한 격자가 부적절하면 결과가 틀린다. 그런데 사용자에게 정하라고 해도 대개 틀린다 — 그건 전문 지식이 필요한 판단이니까. 그렇다면 <strong>틀릴 가능성을 사용자에게 넘기지 않고 시스템이 책임지는 편이 낫다고 판단했다.</strong></p>
+<p>책임을 지는 방식은 20편에서 다룰 검증 문제로 이어진다.</p>
+<h2>확장을 어떻게 남겨뒀나</h2>
+<p>여기서 조심할 것이 있다. 좁게 시작하는 것과 <strong>좁게 갇히는 것</strong>은 다르다.</p>
+<p>우리 계획은 다루는 영역을 단계적으로 넓히는 것이다. 열전달 → 기초 구조 → 그다음. 그런데 나중에 넓힐 수 있으려면, 처음 설계가 <strong>넓힐 자리를 남겨두어야</strong> 한다.</p>
+<p>그래서 DSL의 구조를 이렇게 잡았다. 각 문제는 <em>어떤 물리 현상인가 / 형상은 무엇인가 / 재료는 무엇인가 / 경계에서 무슨 일이 일어나는가 / 무엇을 알고 싶은가</em> 라는 다섯 칸으로 표현된다.</p>
+<p>이 다섯 칸은 열전달에만 해당하는 구조가 아니다. <strong>어떤 물리 문제든 이 형태로 적힌다.</strong> 구조해석도, 전자기도. 다만 각 칸에 들어갈 값의 종류가 다를 뿐이다.</p>
+<p>그래서 새로운 물리를 추가하는 일은 <strong>새 언어를 만드는 것이 아니라 기존 칸에 항목을 더하는 것</strong>이 된다.</p>
+<p>지금은 열전달 하나만 채워져 있다. 나머지 칸은 비어 있지만 자리는 있다.</p>
+<h2>이 결정들이 만든 것</h2>
+<p>정리하면 이렇다. <strong>우리가 만든 것은 &ldquo;수치해석 언어&rdquo;가 아니라 &ldquo;특정 종류의 열전달 문제를 기술하는 언어&rdquo;다.</strong></p>
+<p>훨씬 좁다. 그리고 그 좁음 덕분에 앞에서 필요했던 세 가지가 모두 성립한다. 완전성 검사가 되고, 기본값이 정해지고, 사람이 읽을 수 있다.</p>
+<p>그런데 아직 가장 까다로운 문제가 남았다. <strong>사람의 말은 여전히 애매하다는 것.</strong></p>
+<p>&ldquo;플라스틱&rdquo;이라고만 했을 때 무엇으로 정해야 하나. &ldquo;좀 뜨거운&rdquo; 상태는 몇 도인가. &ldquo;빨리 식는&rdquo; 조건은 어떻게 표현하나. 좁은 언어를 만들어도 입구에 들어오는 말은 여전히 애매하다.</p>
+<p>이 애매함을 어떻게 다룰지가 다음 편의 주제다.</p>
 <hr />
-<p><strong>다음 편 예고 —</strong> <em>질문하는 사람과 계산하는 사람 사이의 거리.</em> 왜 설계자가 직접 해석하지 못하게 되었는지, 그 분업이 언제 어떻게 굳어졌는지 따라가 본다.</p></div><div class="pnav"><a class="nv prev" href="/blog/01-why-one-day/"><span class="lbl">이전 편</span><span class="nt">01. 해석 한 번 돌리는 데 왜 하루가 걸릴까</span></a><a class="nv next" href="/blog/03-the-distance/"><span class="lbl">다음 편</span><span class="nt">03. 질문하는 사람과 계산하는 사람 사이의 거리</span></a></div><div class="a-back"><a href="/">← 연재 목차 전체 보기</a></div></article></main></div><footer><div class="solo">© Numpilot</div></footer>
+<p><strong>다음 편 예고 —</strong> <em>설계 ②: 애매함을 어떻게 다룰까.</em> 정할 수 없는 것을 정해야 할 때, 시스템이 취할 수 있는 태도들을 비교한다.</p></div><div class="pnav"><a class="nv prev" href="/blog/08-what-is-a-dsl/"><span class="lbl">이전 편</span><span class="nt">08. DSL이란 무엇인가 — 좁은 언어의 힘</span></a><a class="nv next" href="/blog/10-design-ambiguity/"><span class="lbl">다음 편</span><span class="nt">10. 설계 ②: 애매함을 어떻게 다룰까</span></a></div><div class="a-back"><a href="/">← 연재 목차 전체 보기</a></div></article></main></div><footer><div class="solo">© Numpilot</div></footer>
 </body></html>
